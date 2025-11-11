@@ -176,8 +176,6 @@ expected_family_relations = [
     'father chuck alice' ]
     
 def family_rules_1_testanswer(val, original_val = None):
-    # res = set([x.split(" ") for x in val])
-    # print(res)
     return (   x for x in val
                     if x.split(" ")[0] in (
                                          'father',
@@ -207,8 +205,8 @@ make_test(type = 'VALUE',
 family_rules_2_getargs = 'TEST_RESULTS_2'
 
 def family_rules_2_testanswer(val, original_val = None):
-    return ( [ x for x in val
-                    if x.split()[0] == 'cousin' ] 
+    return (  x for x in val
+                    if x.split(" ")[0] == 'cousin'  
              ==     [ 'cousin c1 c3',
                       'cousin c1 c4',
                       'cousin c2 c3',

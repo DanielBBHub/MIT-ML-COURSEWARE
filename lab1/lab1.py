@@ -155,11 +155,35 @@ regla_6 = IF(
               ), 
               THEN("brother (?y) (?z)")
               )
-# Match para recoger si x es madre/padre de y y z, si y es mujer
+# Match para recoger si x es hijo de y y si z es hijo de x
+regla_7 = IF(
+              AND("son (?x) (?y)", "son (?z) (?x)"),
+              THEN("grandchild (?z) (?y)")
+)
+# Match para recoger si x es hija de y y si z es hija de x
+regla_8 = IF(
+              AND("daughter (?x) (?y)", "daughter (?z) (?x)"),
+              THEN("grandchild (?z) (?y)")
+)
+# Match para recoger si x es hijo de y y si z es hijo de x
+regla_9 = IF(
+              AND("son (?x) (?y)", "daughter (?z) (?x)"),
+              THEN("grandchild (?z) (?y)")
+)
+# Match para recoger si x es hija de y y si z es hija de x
+regla_10 = IF(
+              AND("daughter (?x) (?y)", "son (?z) (?x)"),
+              THEN("grandchild (?z) (?y)")
+)
+# Match para recoger si x es nieto/a de y y si z es nieto/a de y
+regla_11 = IF(
+            AND("grandchild (?x) (?y)", "grandchild (?z) ?(y)"),
+            THEN("cousin (?x) (?z)")
+)
 
 # Then, put them together into a list in order, and call it
 # family_rules.
-family_rules = [regla_1,regla_2,regla_3,regla_4,regla_5,regla_6]                    # fill me in
+family_rules = [regla_1,regla_2,regla_3,regla_4,regla_5,regla_6,regla_7,regla_8,regla_9, regla_10, regla_11]                    # fill me in
 
 # Some examples to try it on:
 # Note: These are used for testing, so DO NOT CHANGE

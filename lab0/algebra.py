@@ -91,7 +91,6 @@ class Sum(list, Expression):
                 terms.append(term)
         return Sum(terms)
 
-
 class Product(list, Expression):
     """
     See the documentation above for Sum. A Product acts almost exactly
@@ -137,10 +136,6 @@ def simplify_if_possible(expr):
     else:
         return expr
 
-# You may find the following helper functions to be useful.
-# "multiply" is provided for you; but you will need to write "do_multiply"
-# if you would like to use it.
-
 def multiply(expr1, expr2):
     """
     This function makes sure that its arguments are represented as either a
@@ -151,7 +146,6 @@ def multiply(expr1, expr2):
     if not isinstance(expr1, Expression): expr1 = Product([expr1])
     if not isinstance(expr2, Expression): expr2 = Product([expr2])
     return do_multiply(expr1, expr2)
-
 
 def do_multiply(expr1, expr2):
     """
