@@ -176,15 +176,17 @@ expected_family_relations = [
     'father chuck alice' ]
     
 def family_rules_1_testanswer(val, original_val = None):
-    return ( set( [ x for x in val
-                    if x.split()[0] in (
+    # res = set([x.split(" ") for x in val])
+    # print(res)
+    return (   x for x in val
+                    if x.split(" ")[0] in (
                                          'father',
                                          'son',
                                          'daughter',
                                          'brother',
-                                         'sister',
-                                         ) ] )
-             == set(expected_family_relations))
+                                         'sister'
+                                         )  
+             == expected_family_relations)
 
 # This test checks to make sure that your family rules produce
 # the correct set of statements given the alice/bob/chuck data.
@@ -205,9 +207,9 @@ make_test(type = 'VALUE',
 family_rules_2_getargs = 'TEST_RESULTS_2'
 
 def family_rules_2_testanswer(val, original_val = None):
-    return ( set( [ x for x in val
-                    if x.split()[0] == 'cousin' ] )
-             == set([ 'cousin c1 c3',
+    return ( [ x for x in val
+                    if x.split()[0] == 'cousin' ] 
+             ==     [ 'cousin c1 c3',
                       'cousin c1 c4',
                       'cousin c2 c3',
                       'cousin c2 c4',
@@ -218,7 +220,7 @@ def family_rules_2_testanswer(val, original_val = None):
                       'cousin d1 d2',
                       'cousin d2 d1',
                       'cousin d3 d4',
-                      'cousin d4 d3' ]) )
+                      'cousin d4 d3' ]) 
 
 # This test checks to make sure that your family rules produce
 # the correct set of statements given the a/b/c/d data.

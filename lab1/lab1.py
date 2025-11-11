@@ -17,7 +17,7 @@ from production import IF, AND, OR, NOT, THEN, forward_chain
 #    2. the consequent
 #    3. both
 
-ANSWER_1 = 'your answer here'
+ANSWER_1 = '2'
 
 # A rule-based system about Monty Python's "Dead Parrot" sketch
 # uses the following rules:
@@ -37,10 +37,10 @@ ANSWER_1 = 'your answer here'
 
 # Will this system produce the datum 'Polly is pining for the
 # fjords'?  Answer 'yes' or 'no'.
-ANSWER_2 = 'your answer here'
+ANSWER_2 = 'no'
 
 # Which rule contains a programming error? Answer '1' or '2'.
-ANSWER_3 = 'your answer here'
+ANSWER_3 = '2'
 
 # If you're uncertain of these answers, look in tests.py for an
 # explanation.
@@ -69,11 +69,11 @@ ANSWER_3 = 'your answer here'
 # what is asked.  After we start the system running, which rule
 # fires first?
 
-ANSWER_4 = 'your answer here'
+ANSWER_4 = '1'
 
 # Which rule fires second?
 
-ANSWER_5 = 'your answer here'
+ANSWER_5 = '0'
 
 
 # Problem 1.3.1: Poker hands
@@ -90,7 +90,7 @@ poker_data = ( 'two-pair beats pair',
 # which poker hands beat which, transitively. For example, it
 # should be able to deduce that a three-of-a-kind beats a pair,
 # because a three-of-a-kind beats two-pair, which beats a pair.
-transitive_rule = IF( AND(), THEN() )
+transitive_rule = IF( AND("(?x) beats (?y)", "(?y) beats (?z)"), THEN("(?x) beats (?z)") )
 
 # You can test your rule like this:
 # print forward_chain([transitive_rule], poker_data)
@@ -111,10 +111,55 @@ TEST_RESULTS_TRANS2 = forward_chain([transitive_rule],
 # them names by assigning them to variables. This way, you'll be
 # able to refer to the rules by name and easily rearrange them if
 # you need to.
+""" 
+You will be given data that includes three kinds of statements:
+- 'male x': x is male
+- 'female x': x is female
+- 'parent x y': x is a parent of y  
+"""
+""" 
+Your task is to deduce, wherever you can, the following relations:
+- 'brother x y': x is the brother of y (sharing at least one parent)
+- 'sister x y': x is the sister of y (sharing at least one parent)
+- 'mother x y': x is the mother of y
+- 'father x y': x is the father of y
+- 'son x y': x is the son of y
+- 'daughter x y': x is the daughter of y
+- 'cousin x y': x and y are cousins (a parent of x and a parent of y are siblings)
+- 'grandparent x y': x is the grandparent of y
+- 'grandchild x y': x is the grandchild of y 
+"""
+# Match para recoger si x es mujer y si x es madre de y
+regla_1 = IF(AND("female (?x)", "parent (?x) (?y)"), THEN("mother (?x) (?y)"))
+# Match para recoger si x es hombre y si x es padre de y
+regla_2 = IF(AND("male (?x)", "parent (?x) (?y)"), THEN("father (?x) (?y)"))
+# Match para recoger si x es hijo de y y si y es hombre
+regla_3 = IF(AND("parent (?x) (?y)", "male (?y)"), THEN("son (?y) (?x)")) 
+# Match para recoger si x es hija de y y si y es mujer
+regla_4 = IF(AND("parent (?x) (?y)", "female (?y)"), THEN("daughter (?y) (?x)"))
+# Match para recoger si x es madre/padre de y y z, si y es mujer
+regla_5 = IF(
+              AND(
+                  OR(
+                      AND("mother (?x) (?y)", "mother (?x) (?z)"),AND("father (?x) (?y)", "father (?x) (?z)")
+                    ),"female (?y)"
+              ), 
+              THEN("sister (?y) (?z)")
+              )
+# Match para recoger si x es madre/padre de y y z, si y es hombre
+regla_6 = IF(
+              AND(
+                  OR(
+                      AND("mother (?x) (?y)", "mother (?x) (?z)"),AND("father (?x) (?y)", "father (?x) (?z)")
+                    ),"male (?y)"
+              ), 
+              THEN("brother (?y) (?z)")
+              )
+# Match para recoger si x es madre/padre de y y z, si y es mujer
 
 # Then, put them together into a list in order, and call it
 # family_rules.
-family_rules = [ ]                    # fill me in
+family_rules = [regla_1,regla_2,regla_3,regla_4,regla_5,regla_6]                    # fill me in
 
 # Some examples to try it on:
 # Note: These are used for testing, so DO NOT CHANGE
@@ -134,7 +179,7 @@ simpsons_data = ("male bart",
 TEST_RESULTS_6 = forward_chain(family_rules,
                                simpsons_data,verbose=False)
 # You can test your results by uncommenting this line:
-# print forward_chain(family_rules, simpsons_data, verbose=True)
+# print( forward_chain(family_rules, simpsons_data, verbose=True))
 
 black_data = ("male sirius",
               "male regulus",
