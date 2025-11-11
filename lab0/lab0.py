@@ -110,7 +110,7 @@ from algebra_utils import distribution, encode_sumprod, decode_sumprod
 WHEN_DID_YOU_TAKE_601 = ""
 
 # How many hours did you spend per 6.01 lab?
-HOURS_PER_601_LAB = "2"
+HOURS_PER_601_LAB = ""
 
 # How well did you learn 6.01?
 HOW_WELL_I_LEARNED_601 = ""

@@ -245,32 +245,30 @@ def substitute_vars(lst, context = {}):
 
 
 def evaluator(lst, context = {}):
-
     if isinstance(lst, Sum):
         retVal = 0
         for elt in lst:
-            if elt in context.keys():
-                elt = context[elt]
-
             if isinstance(elt, Expression):
                 retVal += evaluator(elt, context)
+            # if context:
+            #     if elt in context.keys():
+            #         elt = context[elt]
             else:
                 retVal += elt
-#        print retVal
+
         return retVal
     
     elif isinstance(lst, Product):        
         retVal = 1
         for elt in lst:
-            if elt in context.keys():
-                elt = context[elt]
-
             if isinstance(elt, Expression):
                 retVal *= evaluator(elt, context)
+            # if context:
+            #     if elt in context.keys():
+            #         elt = context[elt]
             else:
                 retVal *= elt
 
-#        print retVal
         return retVal    
         
              
@@ -282,7 +280,6 @@ def distribution_1_testanswer(ans, original_val = None):
     return ( evaluator(ans) == 4 and is_flat(ans) )
 
 distribution_1_expected = "A simplified Expression that evaluates to 4"
-             
              
 def distribution_2_getargs():
     return [ encode_sumprod(Product([1, Sum([3, 1])])) ]
@@ -340,6 +337,7 @@ distribution_5_expected = "(this test is randomly generated)"
 #
 #def survey_answer_testanswer(ans, original_val = None):
 #    return True
+
 
 def encode_sumprod(lst):
     retVal = []

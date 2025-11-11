@@ -173,6 +173,37 @@ def do_multiply(expr1, expr2):
     Look above for details on the Sum and Product classes. The Python operator
     '*' will not help you.
     """
-    # Replace this with your solution.
-    raise NotImplementedError
+    """ Casos do_multiply()
+     1. do_multiply(Sum,Sum) -> (a + b) * (c + d) = ((a * c) + (a * d) + (b * c) + (b * d)) 
+     2. do_multiply(Sum,Product) -> (a + b) * (c * d) = (c * d * a) + (c * d * b)
+     3. do_multiply(Product,Sum) -> (a * b) * (c + d) = (a * b * c) + (a * b * d)
+     4. do_multiply(Product,Product) -> (a * b) * (c * d) = (ab) * (cd)
+    """
+
+    # Caso 1: Sum × Sum
+    if isinstance(expr1, Sum) and isinstance(expr2, Sum):
+        terms = []
+        for term1 in expr1:
+            for term2 in expr2:
+                terms.append(Product([term1, term2]))
+        return Sum(terms)
+    
+    # Caso 2: Sum × Product  
+    elif isinstance(expr1, Sum) and isinstance(expr2, Product):
+        terms = []
+        for term in expr1:
+            terms.append(Product(list(expr2) + [term]))
+        return Sum(terms)
+        
+    # Caso 3: Product × Sum
+    elif isinstance(expr1, Product) and isinstance(expr2, Sum):
+        terms = []
+        for term in expr2:
+            terms.append(Product(list(expr1) + [term]))
+        return Sum(terms)
+    
+    # Caso 4: Product × Product
+    elif isinstance(expr1, Product) and isinstance(expr2, Product):
+        return Product(list(expr1) + list(expr2))
+
 
