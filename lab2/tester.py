@@ -1,15 +1,12 @@
 # Fall 2012 6.034 Lab 2: Search
 
-import xmlrpclib
+import xmlrpc.client as xmlrpclib
 import traceback
 import sys
 import os
 import tarfile
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
+from io import StringIO
 
 
 def test_summary(dispindex, ntests):
@@ -19,22 +16,22 @@ def show_result(testsummary, testcode, correct, got, expected, verbosity):
     """ Pretty-print test results """
     if correct:
         if verbosity > 0:
-            print "%s: Correct." % testsummary
+            print("%s: Correct." % testsummary)
         if verbosity > 1:
-            print '\t', testcode
-            print
+            print('\t', testcode)
+            print()
     else:
-        print "%s: Incorrect." % testsummary
-        print '\t', testcode
-        print "Got:     ", got
-        print "Expected:", expected
+        print("%s: Incorrect." % testsummary)
+        print('\t', testcode)
+        print("Got:     ", got)
+        print("Expected:", expected)
 
 def show_exception(testsummary, testcode):
     """ Pretty-print exceptions (including tracebacks) """
-    print "%s: Error." % testsummary
-    print "While running the following test case:"
-    print '\t', testcode
-    print "Your code encountered the following error:"
+    print("%s: Error." % testsummary)
+    print("While running the following test case:")
+    print('\t', testcode)
+    print("Your code encountered the following error:")
     traceback.print_exc()
     print
 
@@ -52,15 +49,15 @@ def get_lab_module():
         
     lab = None
 
-    for labnum in xrange(10):
+    for labnum in range(10):
         try:
             lab = __import__('lab%s' % labnum)
         except ImportError:
             pass
 
     if lab == None:
-        raise ImportError, "Cannot find your lab; or, error importing it.  Try loading it by running 'python labN.py' (for the appropriate value of 'N')."
-
+        raise ImportError("Cannot find your lab; or, error importing it.  Try loading it by running 'python labN.py' (for the appropriate value of 'N')."
+)
     if not hasattr(lab, "LAB_NUMBER"):
         lab.LAB_NUMBER = labnum
     
@@ -101,7 +98,7 @@ def type_decode(arg, lab):
             try:
                 mytype = arg[0]
                 data = arg[1:]
-                return apply(find_attr(lab, mytype), [ type_decode(x, lab) for x in data ])
+                return find_attr(lab, mytype)(* [ type_decode(x, lab) for x in data ])
             except AttributeError:
                 traceback.print_exc()
                 #return [ type_decode(x, lab) for x in arg ]
@@ -151,13 +148,13 @@ def run_test(test, lab):
     if mytype == 'VALUE':
         return attr
     elif mytype == 'FUNCTION':
-        return apply(attr, args)
+        return attr(*args)
     elif mytype == 'MULTIFUNCTION':
         return [ run_test( (id, 'FUNCTION', attr_name, FN), lab) for FN in args ]
     elif mytype == 'FUNCTION_ENCODED_ARGS':
         return run_test( (id, 'FUNCTION', attr_name, type_decode(args, lab)), lab )
     else:
-        raise Exception, "Test Error: Unknown TYPE '%s'.  Please make sure you have downloaded the latest version of the tester script.  If you continue to see this error, contact a TA."
+        raise Exception("Test Error: Unknown TYPE '%s'.  Please make sure you have downloaded the latest version of the tester script.  If you continue to see this error, contact a TA.")
 
 
 def test_offline(verbosity=1):
@@ -186,7 +183,7 @@ def test_offline(verbosity=1):
                 
             answer = run_test((index, type, fn_name, getargs), get_lab_module())
         except NotImplementedError:
-            print "%d: (%s: Function not yet implemented, NotImplementedError raised)" % (index, testname)
+            print("%d: (%s: Function not yet implemented, NotImplementedError raised)" % (index, testname))
             continue
         except Exception:
             show_exception(summary, testname)
@@ -196,7 +193,7 @@ def test_offline(verbosity=1):
         show_result(summary, testname, correct, answer, expected, verbosity)
         if correct: ncorrect += 1
     
-    print "Passed %d of %d tests." % (ncorrect, ntests)
+    print( "Passed %d of %d tests." % (ncorrect, ntests))
     return ncorrect == ntests
 
 
@@ -204,19 +201,18 @@ def get_target_upload_filedir():
     """ Get, via user prompting, the directory containing the current lab """
     cwd = os.getcwd() # Get current directory.  Play nice with Unicode pathnames, just in case.
         
-    print "Please specify the directory containing your lab."
-    print "Note that all files from this directory will be uploaded!"
-    print "Labs should not contain large amounts of data; very-large"
-    print "files will fail to upload."
-    print
-    print "The default path is '%s'" % cwd
-    target_dir = raw_input("[%s] >>> " % cwd)
+    print( "Please specify the directory containing your lab.")
+    print( "Note that all files from this directory will be uploaded!")
+    print( "Labs should not contain large amounts of data; very-large")
+    print( "files will fail to upload.")
+    print( "The default path is '%s'" % cwd)
+    target_dir = input("[%s] >>> " % cwd)
 
     target_dir = target_dir.strip()
     if target_dir == '':
         target_dir = cwd
 
-    print "Ok, using '%s'." % target_dir
+    print( "Ok, using '%s'." % target_dir)
 
     return target_dir
 
@@ -225,79 +221,20 @@ def get_tarball_data(target_dir, filename):
     data = StringIO()
     file = tarfile.open(filename, "w|bz2", data)
 
-    print "Preparing the lab directory for transmission..."
+    print( "Preparing the lab directory for transmission...")
             
     file.add(target_dir)
     
-    print "Done."
-    print
-    print "The following files have been added:"
+    print( "Done.")
+    print( "The following files have been added:")
     
     for f in file.getmembers():
-        print f.name
+        print( f.name)
             
     file.close()
 
     return data.getvalue()
     
-
-def test_online(verbosity=1):
-    """ Run online unit tests.  Run them against the 6.034 server via XMLRPC. """
-    lab = get_lab_module()
-
-    try:
-        server = xmlrpclib.Server(server_url, allow_none=True)
-        tests = server.get_tests(username, password, lab.__name__)
-    except NotImplementedError: # Solaris Athena doesn't seem to support HTTPS
-        print "Your version of Python doesn't seem to support HTTPS, for"
-        print "secure test submission.  Would you like to downgrade to HTTP?"
-        print "(note that this could theoretically allow a hacker with access"
-        print "to your local network to find your 6.034 password)"
-        answer = raw_input("(Y/n) >>> ")
-        if len(answer) == 0 or answer[0] in "Yy":
-            server = xmlrpclib.Server(server_url.replace("https", "http"))
-            tests = server.get_tests(username, password, lab.__name__)
-        else:
-            print "Ok, not running your tests."
-            print "Please try again on another computer."
-            print "Linux Athena computers are known to support HTTPS,"
-            print "if you use the version of Python in the 'python' locker."
-            sys.exit(0)
-            
-    ntests = len(tests)
-    ncorrect = 0
-
-    lab = get_lab_module()
-    
-    target_dir = get_target_upload_filedir()
-
-    tarball_data = get_tarball_data(target_dir, "lab%s.tar.bz2" % lab.LAB_NUMBER)
-            
-    print "Submitting to the 6.034 Webserver..."
-
-    server.submit_code(username, password, lab.__name__, xmlrpclib.Binary(tarball_data))
-
-    print "Done submitting code."
-    print "Running test cases..."
-    
-    for index, testcode in enumerate(tests):
-        dispindex = index+1
-        summary = test_summary(dispindex, ntests)
-
-        try:
-            answer = run_test(testcode, get_lab_module())
-        except Exception:
-            show_exception(summary, testcode)
-            continue
-
-        correct, expected = server.send_answer(username, password, lab.__name__, testcode[0], type_encode(answer))
-        show_result(summary, testcode, correct, answer, expected, verbosity)
-        if correct: ncorrect += 1
-    
-    response = server.status(username, password, lab.__name__)
-    print response
-
-
 def make_test_counter_decorator():
     tests = []
     def make_test(getargs, testanswer, expected_val, name = None, type = 'FUNCTION'):

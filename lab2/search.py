@@ -49,12 +49,12 @@ class Graph:
     
     def validate(self):
         for name in self.nodes:
-            assert isinstance(name,basestring), str(type(name))+": "+str(name)
+            assert isinstance(name,str), str(type(name))+": "+str(name)
         assert len(self.nodes) == len(set(self.nodes)), "no duplicate nodes"
         edgenames = [edge.name for edge in self.edges]
         assert len(edgenames) == len(set(edgenames)), "no duplicate edges"
         for edge in self.edges:
-            assert isinstance(edge.name, basestring), type(edge.name)
+            assert isinstance(edge.name, str), type(edge.name)
             assert edge.node1 in self.nodes
             assert edge.node2 in self.nodes
             assert edge.length > 0, "positive edges only today"

@@ -173,7 +173,7 @@ if do_bfs:
 
     def bfs_1_testanswer(val, original_val = None):
         if val and len(val) > 0 and isinstance(val[0], dict):
-            raise Exception, "Error: Graph functions are supposed to return a list of node *names*, not node dictionaries!"
+            raise Exception( "Error: Graph functions are supposed to return a list of node *names*, not node dictionaries!")
 
         return ( val and list(val) == list('SCDH') )
 
