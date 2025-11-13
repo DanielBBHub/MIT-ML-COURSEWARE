@@ -3,7 +3,6 @@
 from search import *
 
 ## The graphs you will use for the problem set.
-
 ## The heuristic values
 ## are lower bounds on the distance to the node with the id of
 ## "Common Area"

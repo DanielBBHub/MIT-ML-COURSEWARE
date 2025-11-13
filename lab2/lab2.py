@@ -38,9 +38,50 @@ from search import Graph
 # If you implement these, the offline tester will test them.
 # If you don't, it won't.
 # The online tester will not test them.
+""" Graph() -> Node([]),Edge([]),Dict({Heuristic}), Dict({Edges}) 
+                Node(str)
+                Edge(str(name), str(node1),str(node2),int(length))"""
 
 def bfs(graph, start, goal):
-    raise NotImplementedError
+    """  breadth-first search extiende todos los nodos creando primero
+         los niveles horizontales, es decir, busca todos los nodos conectados
+         al nodo evaluado"""
+    print(f"NODO INICIAL: {start}")
+    print(f"NODO OBJETIVO: {goal}")
+    agenda = []
+    visited = []
+    pathDict = {}
+    pathXT = []
+    eval_node = ""
+    nodos_conectados = graph.get_connected_nodes(start)
+    agenda = sorted(nodos_conectados)
+    for nodo in agenda:
+        pathDict.setdefault(nodo, list(start) + list(nodo))
+
+    while agenda:
+        eval_node = agenda.pop(0)
+
+        if eval_node == goal:
+            pathXT += list(eval_node)
+            print(pathXT)
+            print("GOAAL!!")
+            return pathXT
+
+        elif eval_node in visited:
+            continue
+        
+        else:
+            for nodo in graph.get_connected_nodes(eval_node):
+                if nodo not in visited:
+                    agenda.append( nodo)
+                    pathDict.setdefault(nodo, pathXT + list(nodo))
+            
+            pathXT = pathDict[eval_node]
+            visited.append(eval_node)
+
+    print(pathDict[goal])
+    return pathDict[goal]
+    # raise NotImplementedError
 
 ## Once you have completed the breadth-first search,
 ## this part should be very simple to complete.

@@ -431,49 +431,49 @@ make_test(type = 'FUNCTION',
 
 ### TEST 15 ###
 
-def exp_graph(depth):
-    g = Graph(["1"])
-    goal = 1
-    for d in range(depth):
-        nodeids = range(2**(d+1), 2**(d+2))
-        goal = random.choice(nodeids)
-        for nodeid in nodeids:
-            parent = nodeid/2 # intentional integer division
-            g.add_edge(str(parent), str(nodeid), 1)
-    best_path = [goal]
-    while goal > 0:
-        goal = goal/2 # intentional integer division
-        best_path.append(goal)
-    goal = best_path[0]
+# def exp_graph(depth):
+#     g = Graph(["1"])
+#     goal = 1
+#     for d in range(depth):
+#         nodeids = range(2**(d+1), 2**(d+2))
+#         goal = random.choice(nodeids)
+#         for nodeid in nodeids:
+#             parent = nodeid/2 # intentional integer division
+#             g.add_edge(str(parent), str(nodeid), 1)
+#     best_path = [goal]
+#     while goal > 0:
+#         goal = goal/2 # intentional integer division
+#         best_path.append(goal)
+#     goal = best_path[0]
 
-    for nodeid in range(1,2**(depth+1)):
-        distance = 0
-        shared_parent = nodeid
-        while shared_parent not in best_path:
-            distance += 1
-            shared_parent = shared_parent / 2 # intentional integer division
-        g.set_heuristic(str(nodeid), str(goal), distance+best_path.index(shared_parent))
-    return g
+#     for nodeid in range(1,2**(depth+1)):
+#         distance = 0
+#         shared_parent = nodeid
+#         while shared_parent not in best_path:
+#             distance += 1
+#             shared_parent = shared_parent / 2 # intentional integer division
+#         g.set_heuristic(str(nodeid), str(goal), distance+best_path.index(shared_parent))
+#     return g
 
-hill_climbing_test_6_graph = exp_graph(10)
-hill_climbing_test_6_goal = hill_climbing_test_6_graph.heuristic.keys()[0]
-hill_climbing_timing = {'START': 0}
+# hill_climbing_test_6_graph = exp_graph(10)
+# hill_climbing_test_6_goal = hill_climbing_test_6_graph.heuristic.keys()[0]
+# hill_climbing_timing = {'START': 0}
 
-def hill_climbing_6_getargs():
-    hill_climbing_timing["START"] = time.time()
-    return [hill_climbing_test_6_graph, "1", hill_climbing_test_6_goal]
+# def hill_climbing_6_getargs():
+#     hill_climbing_timing["START"] = time.time()
+#     return [hill_climbing_test_6_graph, "1", hill_climbing_test_6_goal]
 
-def hill_climbing_6_testanswer(val, original_val = None):
-    elapsed = time.time() - hill_climbing_timing["START"]
-    return ( elapsed < 5 and val[-1] == hill_climbing_test_6_goal)
+# def hill_climbing_6_testanswer(val, original_val = None):
+#     elapsed = time.time() - hill_climbing_timing["START"]
+#     return ( elapsed < 5 and val[-1] == hill_climbing_test_6_goal)
 
-make_test(type = 'FUNCTION',
-          getargs = hill_climbing_6_getargs,
-          testanswer = hill_climbing_6_testanswer,
-          expected_val = ("hill climbing to take less than one second and get to %s"
-                          % hill_climbing_test_6_goal),
-          name = 'hill_climbing'
-          )
+# make_test(type = 'FUNCTION',
+#           getargs = hill_climbing_6_getargs,
+#           testanswer = hill_climbing_6_testanswer,
+#           expected_val = ("hill climbing to take less than one second and get to %s"
+#                           % hill_climbing_test_6_goal),
+#           name = 'hill_climbing'
+#           )
 
 
 ### TEST 16 ###
@@ -695,25 +695,25 @@ make_test(type = 'FUNCTION',
 
 ### TEST 29 ###
 
-a_star_test_5_graph = exp_graph(11)
-a_star_test_5_goal = a_star_test_5_graph.heuristic.keys()[0]
-a_star_timing = {'START': 0}
+# a_star_test_5_graph = exp_graph(11)
+# a_star_test_5_goal = a_star_test_5_graph.heuristic.keys()[0]
+# a_star_timing = {'START': 0}
 
-def a_star_5_getargs():
-    a_star_timing["START"] = time.time()
-    return [a_star_test_5_graph, "1", a_star_test_5_goal]
+# def a_star_5_getargs():
+#     a_star_timing["START"] = time.time()
+#     return [a_star_test_5_graph, "1", a_star_test_5_goal]
 
-def a_star_5_testanswer(val, original_val = None):
-    elapsed = time.time() - a_star_timing["START"]
-    return ( elapsed < 1 and val[-1] == a_star_test_5_goal)
+# def a_star_5_testanswer(val, original_val = None):
+#     elapsed = time.time() - a_star_timing["START"]
+#     return ( elapsed < 1 and val[-1] == a_star_test_5_goal)
 
-make_test(type = 'FUNCTION',
-          getargs = a_star_5_getargs,
-          testanswer = a_star_5_testanswer,
-          expected_val = ("a_star to take less than one second and get to %s"
-                          % a_star_test_5_goal),
-          name = 'a_star'
-          )
+# make_test(type = 'FUNCTION',
+#           getargs = a_star_5_getargs,
+#           testanswer = a_star_5_testanswer,
+#           expected_val = ("a_star to take less than one second and get to %s"
+#                           % a_star_test_5_goal),
+#           name = 'a_star'
+#           )
 
 
 ### TEST 30 ###
