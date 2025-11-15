@@ -1,4 +1,5 @@
 # Fall 2012 6.034 Lab 2: Search
+from functools import reduce
 
 try:
     set()

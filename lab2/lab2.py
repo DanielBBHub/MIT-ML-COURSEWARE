@@ -46,47 +46,111 @@ def bfs(graph, start, goal):
     """  breadth-first search extiende todos los nodos creando primero
          los niveles horizontales, es decir, busca todos los nodos conectados
          al nodo evaluado"""
-    print(f"NODO INICIAL: {start}")
-    print(f"NODO OBJETIVO: {goal}")
+    # Comprobacion picara por si entrase un nodo inicial == nodo final
+    if start == goal:
+        return [start]
+    
     agenda = []
     visited = []
     pathDict = {}
     pathXT = []
     eval_node = ""
+    # Inicializamos la cola calculando los nodos conectados y encolandolos
     nodos_conectados = graph.get_connected_nodes(start)
     agenda = sorted(nodos_conectados)
+    # Inicializamos el diccionario que guardara los paths por nodo con el string
+    # de nodo como llave
     for nodo in agenda:
         pathDict.setdefault(nodo, list(start) + list(nodo))
-
+    # Definimos el nodo de inicio como ya visitado para no dar la vuelta
+    visited.append(start)
     while agenda:
+        # Empezamos el bucle sacando el primer valor de la lista
         eval_node = agenda.pop(0)
 
+        # Comprobamos que vayamos a evaluar el nodo objetivo
         if eval_node == goal:
-            pathXT += list(eval_node)
-            print(pathXT)
-            print("GOAAL!!")
-            return pathXT
+            print(pathDict[eval_node])
+            return pathDict[eval_node]
 
+        # Si es un nodo ya extendido se continua evaluando los siguientes
         elif eval_node in visited:
             continue
         
         else:
-            for nodo in graph.get_connected_nodes(eval_node):
+            # Se calculan los nodos conectados al nodo a evaluar
+            eval_conected = graph.get_connected_nodes(eval_node)
+            # Se recorren los nodos adjuntos al nodo evaluado
+            for nodo in eval_conected:
+                # Se ignoran los nodos ya visitados
                 if nodo not in visited:
+                    # Si el nodo adjunto no esta visitado se agrega a la cola/agenda de nodos a visitar
                     agenda.append( nodo)
+                    # Se recoge el path que hemos extendido con el nodo a evaluar 
+                    pathXT = pathDict[eval_node]
+                    # Se asocia al nodo conectado una lista con el path del nodo evaluado + el nuevo nodo evaluado
                     pathDict.setdefault(nodo, pathXT + list(nodo))
-            
-            pathXT = pathDict[eval_node]
+            # Se agrega el nodo evaluado a la lista de nodos visitados
             visited.append(eval_node)
+            
 
-    print(pathDict[goal])
     return pathDict[goal]
     # raise NotImplementedError
 
 ## Once you have completed the breadth-first search,
 ## this part should be very simple to complete.
 def dfs(graph, start, goal):
-    raise NotImplementedError
+    """  depth-first search extiende todos los nodos de un camino en orden alfabetico
+         hasta alcanzar la maxima verticalidad. Es decir, dado un arbol que empiece en
+         el nodo S y acabe en el nodo G: 
+         vecinosNodo(start) = ["A", "B"] -> 
+         vecinosNodo("A") = ["C", "D"] -> 
+         vecinosNodo("C") = ["F", "G"]
+         
+    """
+    # Comprobacion picara por si entrase un nodo inicial == nodo final
+    if start == goal:
+        return [start]
+    
+    agenda = []
+    visited = []
+    pathDict = {}
+    pathXT = []
+    eval_node = ""
+    # Inicializamos la cola calculando los nodos conectados y encolandolos
+    nodos_conectados = graph.get_connected_nodes(start)
+    agenda = sorted(nodos_conectados)
+    # Inicializamos el diccionario que guardara los paths por nodo con el string
+    # de nodo como llave
+    for nodo in agenda:
+        pathDict.setdefault(nodo, list(start) + list(nodo))
+    visited.append(start)
+
+    while agenda:
+        eval_node = agenda.pop(0)
+
+        # Comprobamos que vayamos a evaluar el nodo objetivo
+        if eval_node == goal:
+            print(pathDict[eval_node])
+            return pathDict[eval_node]
+
+        # Si es un nodo ya extendido se continua evaluando los siguientes
+        elif eval_node in visited:
+            continue
+
+        else: 
+            eval_connected = graph.get_connected_nodes(eval_node)
+            for nodo in sorted(eval_connected):
+                if nodo not in visited:
+                    # Se recoge el path que hemos extendido con el nodo a evaluar 
+                    pathXT = pathDict[eval_node]
+                    # Se asocia al nodo conectado una lista con el path del nodo evaluado + el nuevo nodo evaluado
+                    pathDict.setdefault(nodo, pathXT + list(nodo))
+            # Se agrega el nodo evaluado a la lista de nodos visitados
+            agenda = eval_connected + agenda
+            visited.append(eval_node)
+
+    # raise NotImplementedError
 
 
 ## Now we're going to add some heuristics into the search.  
