@@ -51,7 +51,7 @@ def bfs(graph, start, goal):
         return [start]
     
     agenda = []
-    visited = []
+    visited = set()
     pathDict = {}
     pathXT = []
     eval_node = ""
@@ -63,7 +63,7 @@ def bfs(graph, start, goal):
     for nodo in agenda:
         pathDict.setdefault(nodo, list(start) + list(nodo))
     # Definimos el nodo de inicio como ya visitado para no dar la vuelta
-    visited.append(start)
+    visited.add(start)
     while agenda:
         # Empezamos el bucle sacando el primer valor de la lista
         eval_node = agenda.pop(0)
@@ -91,7 +91,7 @@ def bfs(graph, start, goal):
                     # Se asocia al nodo conectado una lista con el path del nodo evaluado + el nuevo nodo evaluado
                     pathDict.setdefault(nodo, pathXT + list(nodo))
             # Se agrega el nodo evaluado a la lista de nodos visitados
-            visited.append(eval_node)
+            visited.add(eval_node)
             
 
     return pathDict[goal]
@@ -113,7 +113,7 @@ def dfs(graph, start, goal):
         return [start]
     
     agenda = []
-    visited = []
+    visited = set()
     pathDict = {}
     pathXT = []
     eval_node = ""
@@ -124,7 +124,7 @@ def dfs(graph, start, goal):
     # de nodo como llave
     for nodo in agenda:
         pathDict.setdefault(nodo, list(start) + list(nodo))
-    visited.append(start)
+    visited.add(start)
 
     while agenda:
         eval_node = agenda.pop(0)
@@ -148,7 +148,7 @@ def dfs(graph, start, goal):
                     pathDict.setdefault(nodo, pathXT + list(nodo))
             # Se agrega el nodo evaluado a la lista de nodos visitados
             agenda = eval_connected + agenda
-            visited.append(eval_node)
+            visited.add(eval_node)
 
     # raise NotImplementedError
 
@@ -157,7 +157,61 @@ def dfs(graph, start, goal):
 ## Remember that hill-climbing is a modified version of depth-first search.
 ## Search direction should be towards lower heuristic values to the goal.
 def hill_climbing(graph, start, goal):
-    raise NotImplementedError
+    """ 
+    Hill climbing con backtracking: intenta el vecino con mejor heurística,
+    pero si llega a un callejón sin salida, retrocede e intenta otras opciones.
+    """
+    
+    def hill_climbing_recursive(current_path):
+        # Caso base: hemos llegado al objetivo
+        if current_path[-1] == goal:
+            return current_path
+        
+        # Obtener el nodo actual (último del path)
+        current_node = current_path[-1]
+        connected_nodes = graph.get_connected_nodes(current_node)
+        
+        # Filtrar nodos ya visitados en el path actual
+        valid_neighbors = [node for node in connected_nodes if node not in current_path]
+        
+        # Si no hay vecinos válidos, este es un callejón sin salida
+        if not valid_neighbors:
+            return None
+        
+        # Ordenar vecinos por heurística (mejor primero)
+        neighbors_with_heuristic = []
+        for neighbor in valid_neighbors:
+            heuristic_value = graph.get_heuristic(neighbor, goal)
+            neighbors_with_heuristic.append((neighbor, heuristic_value))
+        
+        # Ordenar por valor heurístico (menor es mejor)
+        neighbors_sorted = sorted(neighbors_with_heuristic, key=lambda x: x[1])
+        
+        # Intentar cada vecino en orden de mejor heurística
+        for neighbor, _ in neighbors_sorted:
+            # Crear nuevo path extendiendo el actual
+            new_path = current_path + [neighbor]
+            
+            # Llamada recursiva
+            result = hill_climbing_recursive(new_path)
+            
+            # Si encontramos una solución, la retornamos
+            if result is not None:
+                return result
+            
+            # Si no encontramos solución, continuamos con el siguiente vecino
+            # (aquí ocurre el backtracking automáticamente)
+        
+        # Si ningún vecino lleva a una solución, retornamos None
+        return None
+    
+    # Iniciar la búsqueda recursiva
+    if start == goal:
+        return [start]
+    
+    result = hill_climbing_recursive([start])
+    return result if result is not None else []
+    # raise NotImplementedError
 
 ## Now we're going to implement beam search, a variation on BFS
 ## that caps the amount of memory used to store paths.  Remember,
