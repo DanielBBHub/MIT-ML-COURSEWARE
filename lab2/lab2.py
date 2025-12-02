@@ -192,7 +192,47 @@ def hill_climbing(graph, start, goal):
 ## The k top candidates are to be determined using the 
 ## graph get_heuristic function, with lower values being better values.
 def beam_search(graph, start, goal, beam_width):
-    raise NotImplementedError
+
+    if start == goal:
+        return start
+    
+    eval_node = start[-1]
+    eval_connected = []
+    eval_connected = graph.get_connected_nodes(eval_node)
+    visited = set ()
+    visited.add(start)
+    heuristics_connected = []
+    pathDict = {}
+    for connected in eval_connected:
+        if connected not in start:
+            heuristics_connected.append((connected, graph.get_heuristic(connected, goal)))
+            pathDict.setdefault(connected, eval_node + connected)
+    heuristics_connected.sort(key=lambda x: x[1])
+
+    while heuristics_connected:
+    
+        filtered_connected = []
+        for i, connected in enumerate(heuristics_connected, 1):
+            if i <= beam_width:
+                filtered_connected.append(connected)
+            else:
+                pathDict.pop(connected[0])
+          
+        heuristics_connected = filtered_connected
+        for eval_node in heuristics_connected:
+            eval_connected = graph.get_connected_nodes(eval_node[0])
+            for connected in eval_connected:
+                if connected not in visited:
+                    heuristics_connected.append((connected, graph.get_heuristic(connected, goal)))
+                    pathDict.setdefault(connected, eval_node + connected)
+                    visited.add(connected)
+            heuristics_connected.pop(eval_node)
+        heuristics_connected.sort(key=lambda x: x[1])
+
+    
+    
+    return 
+    # raise NotImplementedError
 
 ## Now we're going to try optimal search.  The previous searches haven't
 ## used edge distances in the calculation.
