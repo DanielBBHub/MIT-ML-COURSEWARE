@@ -161,56 +161,29 @@ def hill_climbing(graph, start, goal):
     Hill climbing con backtracking: intenta el vecino con mejor heurística,
     pero si llega a un callejón sin salida, retrocede e intenta otras opciones.
     """
+    # Evaluamos si el nodo inicial es el objetivo
+    if start == goal:
+        return start
     
-    def hill_climbing_recursive(current_path):
-        # Caso base: hemos llegado al objetivo
-        if current_path[-1] == goal:
-            return current_path
-        
-        # Obtener el nodo actual (último del path)
-        current_node = current_path[-1]
-        connected_nodes = graph.get_connected_nodes(current_node)
-        
-        # Filtrar nodos ya visitados en el path actual
-        valid_neighbors = [node for node in connected_nodes if node not in current_path]
-        
-        # Si no hay vecinos válidos, este es un callejón sin salida
-        if not valid_neighbors:
-            return None
-        
-        # Ordenar vecinos por heurística (mejor primero)
-        neighbors_with_heuristic = []
-        for neighbor in valid_neighbors:
-            heuristic_value = graph.get_heuristic(neighbor, goal)
-            neighbors_with_heuristic.append((neighbor, heuristic_value))
-        
-        # Ordenar por valor heurístico (menor es mejor)
-        neighbors_sorted = sorted(neighbors_with_heuristic, key=lambda x: x[1])
-        
-        # Intentar cada vecino en orden de mejor heurística
-        for neighbor, _ in neighbors_sorted:
-            # Crear nuevo path extendiendo el actual
-            new_path = current_path + [neighbor]
-            
-            # Llamada recursiva
-            result = hill_climbing_recursive(new_path)
-            
-            # Si encontramos una solución, la retornamos
+    # Evaluamos si el ultimo nodo del path es el objetivo
+    if start[-1] == goal:
+        return list(start)
+    
+    eval_node = start[-1]
+    eval_connected = graph.get_connected_nodes(eval_node)
+    heuristic_nodes = []
+    for node in eval_connected:
+        heuristic_nodes.append((node, graph.get_heuristic(node, goal)))
+
+    heuristic_nodes.sort(key=lambda x: x[1])
+    result = ""
+    for node in heuristic_nodes:
+        if node[0] not in start:
+            new_path = start + node[0]
+            result = hill_climbing(graph, new_path, goal)
             if result is not None:
                 return result
-            
-            # Si no encontramos solución, continuamos con el siguiente vecino
-            # (aquí ocurre el backtracking automáticamente)
-        
-        # Si ningún vecino lleva a una solución, retornamos None
-        return None
-    
-    # Iniciar la búsqueda recursiva
-    if start == goal:
-        return [start]
-    
-    result = hill_climbing_recursive([start])
-    return result if result is not None else []
+
     # raise NotImplementedError
 
 ## Now we're going to implement beam search, a variation on BFS
