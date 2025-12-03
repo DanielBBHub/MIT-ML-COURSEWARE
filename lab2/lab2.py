@@ -203,35 +203,40 @@ def beam_search(graph, start, goal, beam_width):
     visited.add(start)
     heuristics_connected = []
     pathDict = {}
+    
     for connected in eval_connected:
         if connected not in start:
             heuristics_connected.append((connected, graph.get_heuristic(connected, goal)))
             pathDict.setdefault(connected, eval_node + connected)
     heuristics_connected.sort(key=lambda x: x[1])
 
-    while heuristics_connected:
+    while len(heuristics_connected) > 0:
     
         filtered_connected = []
         for i, connected in enumerate(heuristics_connected, 1):
             if i <= beam_width:
                 filtered_connected.append(connected)
-            else:
+            elif connected[0] not in visited:
                 pathDict.pop(connected[0])
-          
+
+        aux_heuristics_connected = []
         heuristics_connected = filtered_connected
         for eval_node in heuristics_connected:
             eval_connected = graph.get_connected_nodes(eval_node[0])
             for connected in eval_connected:
                 if connected not in visited:
-                    heuristics_connected.append((connected, graph.get_heuristic(connected, goal)))
-                    pathDict.setdefault(connected, eval_node + connected)
-                    visited.add(connected)
-            heuristics_connected.pop(eval_node)
+                    if connected == goal:
+                        return list(pathDict[eval_node[0]] + connected)
+                    aux_heuristics_connected.append((connected, graph.get_heuristic(connected, goal)))
+                    pathDict.setdefault(connected, pathDict[eval_node[0]] + connected)
+            # heuristics_connected.remove(eval_node)
+            visited.add(eval_node[0])
+        heuristics_connected = aux_heuristics_connected
         heuristics_connected.sort(key=lambda x: x[1])
 
     
     
-    return 
+    return []
     # raise NotImplementedError
 
 ## Now we're going to try optimal search.  The previous searches haven't
