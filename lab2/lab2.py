@@ -270,16 +270,19 @@ def branch_and_bound(graph, start, goal):
     edges_connected = [graph.get_edge(eval_node, node) for node in eval_connected]
     sorted_connected = sorted(edges_connected, key=lambda node: node.length)
     sorted_connected = [node.node1 if node.node2 == eval_node else node.node2  for node in sorted_connected]
-    
+    res = None
     for node in sorted_connected:
-        if node == goal or start[-1] == goal:
+        if node == goal:
             return list(start) + list(node)
         elif node not in start:
-            result = branch_and_bound(graph, list(start) + list(node), goal)
-            if result is not None:
-                return result
+            if start[-1] != goal:
+                # Comprobar longitud del siguiente nodo, si es mayor, devolver la solución ya encontrada
+                if res:
+                    return res
+                res = branch_and_bound(graph, list(start) + list(node), goal)
+                
     
-    return None
+    return res
     # raise NotImplementedError
 
 def a_star(graph, start, goal):
