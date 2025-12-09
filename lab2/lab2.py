@@ -245,11 +245,42 @@ def beam_search(graph, start, goal, beam_width):
 ## This function takes in a graph and a list of node names, and returns
 ## the sum of edge lengths along the path -- the total distance in the path.
 def path_length(graph, node_names):
-    raise NotImplementedError
+
+    aux_node = node_names[0]
+    total_length = 0
+    for i, node in enumerate(node_names,1):
+        total_length += graph.get_edge(aux_node, node).length
+        aux_node = node
+
+    return total_length
+    # raise NotImplementedError
 
 
 def branch_and_bound(graph, start, goal):
-    raise NotImplementedError
+
+    if start == goal:
+        return list(start)
+    
+    if start[-1] == goal:
+        return start
+    
+    
+    eval_node = start[-1]
+    eval_connected = graph.get_connected_nodes(eval_node)
+    edges_connected = [graph.get_edge(eval_node, node) for node in eval_connected]
+    sorted_connected = sorted(edges_connected, key=lambda node: node.length)
+    sorted_connected = [node.node1 if node.node2 == eval_node else node.node2  for node in sorted_connected]
+    
+    for node in sorted_connected:
+        if node == goal or start[-1] == goal:
+            return list(start) + list(node)
+        elif node not in start:
+            result = branch_and_bound(graph, list(start) + list(node), goal)
+            if result is not None:
+                return result
+    
+    return None
+    # raise NotImplementedError
 
 def a_star(graph, start, goal):
     raise NotImplementedError
