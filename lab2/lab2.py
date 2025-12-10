@@ -248,9 +248,9 @@ def path_length(graph, node_names):
 
     aux_node = node_names[0]
     total_length = 0
-    for i, node in enumerate(node_names,1):
-        total_length += graph.get_edge(aux_node, node).length
-        aux_node = node
+    for i in range(1, len(node_names)):
+        total_length += graph.get_edge(aux_node, node_names[i]).length
+        aux_node = node_names[i]
 
     return total_length
     # raise NotImplementedError
@@ -273,15 +273,19 @@ def branch_and_bound(graph, start, goal):
     res = None
     for node in sorted_connected:
         if node == goal:
-            return list(start) + list(node)
+            candidate = list(start) + list(node)
+            if res is None or path_length(graph, candidate) < path_length(graph, res):
+                res = candidate
         elif node not in start:
-            if start[-1] != goal:
                 # Comprobar longitud del siguiente nodo, si es mayor, devolver la solución ya encontrada
-                if res:
-                    return res
-                res = branch_and_bound(graph, list(start) + list(node), goal)
-                
-    
+            if res:
+                if path_length(graph, list(start) + list(node)) >= path_length(graph, res): 
+                    continue
+            
+            candidate = branch_and_bound(graph, list(start) + list(node), goal)
+            if candidate is not None:
+                if res is None or path_length(graph, candidate) < path_length(graph, res):
+                    res = candidate
     return res
     # raise NotImplementedError
 
