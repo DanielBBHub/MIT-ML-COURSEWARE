@@ -290,7 +290,26 @@ def branch_and_bound(graph, start, goal):
     # raise NotImplementedError
 
 def a_star(graph, start, goal):
-    raise NotImplementedError
+
+    if start == goal:
+        return list(start)
+    
+    eval_node = start[-1]
+
+    
+    eval_connected = graph.get_connected_nodes(eval_node)
+    edges_connected = [graph.get_edge(eval_node, node) for node in eval_connected]
+    sorted_conected_a = [(node.node1, node.length + graph.get_heuristic(node.node1, goal)) if node.node2 == eval_node else (node.node2, node.length + graph.get_heuristic(node.node2, goal)) for node in edges_connected]
+    sorted_conected_a = sorted(sorted_conected_a, key= lambda x: x[1])
+    
+    for node in sorted_conected_a:
+        if node[0] == goal:
+            res = list(start) + list(node[0])
+        elif node[0] not in start:
+            res = a_star(graph, start + node[0], goal)
+
+    return res
+    # raise NotImplementedError
 
 
 ## It's useful to determine if a graph has a consistent and admissible
