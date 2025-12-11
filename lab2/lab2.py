@@ -70,7 +70,6 @@ def bfs(graph, start, goal):
 
         # Comprobamos que vayamos a evaluar el nodo objetivo
         if eval_node == goal:
-            print(pathDict[eval_node])
             return pathDict[eval_node]
 
         # Si es un nodo ya extendido se continua evaluando los siguientes
@@ -131,7 +130,6 @@ def dfs(graph, start, goal):
 
         # Comprobamos que vayamos a evaluar el nodo objetivo
         if eval_node == goal:
-            print(pathDict[eval_node])
             return pathDict[eval_node]
 
         # Si es un nodo ya extendido se continua evaluando los siguientes
@@ -255,7 +253,6 @@ def path_length(graph, node_names):
     return total_length
     # raise NotImplementedError
 
-
 def branch_and_bound(graph, start, goal):
 
     if start == goal:
@@ -301,13 +298,16 @@ def a_star(graph, start, goal):
     edges_connected = [graph.get_edge(eval_node, node) for node in eval_connected]
     sorted_conected_a = [(node.node1, node.length + graph.get_heuristic(node.node1, goal)) if node.node2 == eval_node else (node.node2, node.length + graph.get_heuristic(node.node2, goal)) for node in edges_connected]
     sorted_conected_a = sorted(sorted_conected_a, key= lambda x: x[1])
-    
+    res = None
     for node in sorted_conected_a:
         if node[0] == goal:
-            res = list(start) + list(node[0])
+            candidate = list(start) + list(node[0])
+            if not res:
+                res = candidate
         elif node[0] not in start:
-            res = a_star(graph, start + node[0], goal)
-
+            candidate = a_star(graph, start + node[0], goal)
+            if candidate and not res:
+                res = candidate
     return res
     # raise NotImplementedError
 
@@ -316,13 +316,59 @@ def a_star(graph, start, goal):
 ## heuristic.  You've seen graphs with heuristics that are
 ## admissible, but not consistent.  Have you seen any graphs that are
 ## consistent, but not admissible?
-
+""" 
+A heuristic value gives an approximation from a node to a goal. You've learned that in order for the 
+heuristic to be admissible, the heuristic value for every node in a graph must be less than or equal to the 
+distance of the shortest path from the goal to that node. 
+"""
 def is_admissible(graph, goal):
-    raise NotImplementedError
+    path_lists = []
+    visited = set()
+    for edge in graph.edges:
+        if edge.node1 not in visited:
+            eval_node = edge.node1
+            
+        elif edge.node2 not in visited:
+            eval_node = edge.node2
 
+        if eval_node:
+            path_lists.append((eval_node, branch_and_bound(graph, eval_node, goal)))
+
+    list_admisible = []
+    for node, path in path_lists:
+        heuristic = graph.get_heuristic(node, goal)        
+        if heuristic > path_length(graph, path):
+            list_admisible.append(False)
+        else:
+            list_admisible.append(True)
+
+    if False in list_admisible:
+        return False
+    
+    return True
+    # raise NotImplementedError
+
+""" 
+In order for a heuristic to be consistent, for each 
+edge in the graph, the edge length must be greater than or equal to the absolute value of the difference 
+between the two heuristic values of its nodes.
+ """
 def is_consistent(graph, goal):
-    raise NotImplementedError
 
-HOW_MANY_HOURS_THIS_PSET_TOOK = ''
-WHAT_I_FOUND_INTERESTING = ''
-WHAT_I_FOUND_BORING = ''
+    list_consistent = []
+
+    for edge in graph.edges:
+        if edge.length >= abs(graph.get_heuristic(edge.node1,goal) - graph.get_heuristic(edge.node2,goal)):
+            list_consistent.append(True)
+        else:
+            list_consistent.append(False)
+
+    if False in list_consistent:
+        return False
+    
+    return True
+    # raise NotImplementedError
+
+HOW_MANY_HOURS_THIS_PSET_TOOK = 15
+WHAT_I_FOUND_INTERESTING = 'Implementation of the different search algorithms'
+WHAT_I_FOUND_BORING = 'Nothing really'

@@ -431,32 +431,32 @@ make_test(type = 'FUNCTION',
 
 ### TEST 15 ###
 
-# def exp_graph(depth):
-#     g = Graph(["1"])
-#     goal = 1
-#     for d in range(depth):
-#         nodeids = range(2**(d+1), 2**(d+2))
-#         goal = random.choice(nodeids)
-#         for nodeid in nodeids:
-#             parent = nodeid/2 # intentional integer division
-#             g.add_edge(str(parent), str(nodeid), 1)
-#     best_path = [goal]
-#     while goal > 0:
-#         goal = goal/2 # intentional integer division
-#         best_path.append(goal)
-#     goal = best_path[0]
+def exp_graph(depth):
+    g = Graph(["1"])
+    goal = 1
+    for d in range(depth):
+        nodeids = range(2**(d+1), 2**(d+2))
+        goal = random.choice(nodeids)
+        for nodeid in nodeids:
+            parent = nodeid/2 # intentional integer division
+            g.add_edge(str(parent), str(nodeid), 1)
+    best_path = [goal]
+    while goal > 0:
+        goal = goal/2 # intentional integer division
+        best_path.append(goal)
+    goal = best_path[0]
 
-#     for nodeid in range(1,2**(depth+1)):
-#         distance = 0
-#         shared_parent = nodeid
-#         while shared_parent not in best_path:
-#             distance += 1
-#             shared_parent = shared_parent / 2 # intentional integer division
-#         g.set_heuristic(str(nodeid), str(goal), distance+best_path.index(shared_parent))
-#     return g
+    for nodeid in range(1,2**(depth+1)):
+        distance = 0
+        shared_parent = nodeid
+        while shared_parent not in best_path:
+            distance += 1
+            shared_parent = shared_parent / 2 # intentional integer division
+        g.set_heuristic(str(nodeid), str(goal), distance+best_path.index(shared_parent))
+    return g
 
 # hill_climbing_test_6_graph = exp_graph(10)
-# hill_climbing_test_6_goal = hill_climbing_test_6_graph.heuristic.keys()[0]
+# hill_climbing_test_6_goal = list(hill_climbing_test_6_graph.heuristic.keys())[0]
 # hill_climbing_timing = {'START': 0}
 
 # def hill_climbing_6_getargs():
@@ -696,7 +696,7 @@ make_test(type = 'FUNCTION',
 ### TEST 29 ###
 
 # a_star_test_5_graph = exp_graph(11)
-# a_star_test_5_goal = a_star_test_5_graph.heuristic.keys()[0]
+# a_star_test_5_goal = list(a_star_test_5_graph.heuristic.keys())[0]
 # a_star_timing = {'START': 0}
 
 # def a_star_5_getargs():
@@ -727,7 +727,7 @@ def a_star_test_6_testanswer(val, original_val=None):
 make_test(type = 'FUNCTION_ENCODED_ARGS',
           getargs = a_star_test_6_getargs,
           testanswer = a_star_test_6_testanswer,
-          expected_val = "correct path for the quiz search problem",
+          expected_val = list("SBCJLT"),
           name = 'a_star'
           )
 
