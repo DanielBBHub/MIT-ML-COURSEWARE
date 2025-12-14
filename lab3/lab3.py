@@ -41,7 +41,7 @@ import tree_searcher
 #run_game(human_player, basic_player)
 
 ## Uncomment this line to play a game as black:
-#run_game(basic_player, human_player)
+run_game(basic_player, human_player)
 
 ## Or watch the computer play against itself:
 #run_game(basic_player, basic_player)

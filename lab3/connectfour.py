@@ -1,10 +1,6 @@
 import unicodedata
 import sys
 
-# Python 2.3 compatibiliy with sets
-if not 'set' in globals():
-    from sets import Set as set
-
 def reverse(lst):
     """
     Reverses the order of a list.
@@ -32,10 +28,10 @@ class InvalidMoveException(Exception):
         self._board = board
 
     def __str__(self):
-        return "InvalidMoveException: Can't add to column %s on board\n%s" % (str(self._column), str(self._board))
+        return ("InvalidMoveException: Can't add to column %s on board\n%s" % (str(self._column), str(self._board)))
 
     def __unicode__(self):
-        return "InvalidMoveException: Can't add to column %s on board\n%s" % (unicode(self._column), unicode(self._board))
+        return ("InvalidMoveException: Can't add to column %s on board\n%s" % (str(self._column), str(self._board)))
 
     def __repr__(self):
         return self.__str__()
@@ -146,7 +142,7 @@ class ConnectFourBoard(object):
         Return the index of the first cell in the specified column that is filled.
         Return ConnectFourBoard.board_height if the column is empty.
         """
-        for i in xrange(self.board_height):
+        for i in range(self.board_height):
             if self._board_array[i][column] != 0:
                 return i-1
 
@@ -172,7 +168,7 @@ class ConnectFourBoard(object):
 
         new_board = list( transpose( self.get_board_array() ) )
         target_col = [ x for x in new_board[column] if x != 0 ]
-        target_col = [0 for x in xrange(self.board_height - len(target_col) - 1) ] + [ player_id ] + target_col
+        target_col = [0 for x in range(self.board_height - len(target_col) - 1) ] + [ player_id ] + target_col
 
         new_board[column] = target_col
         new_board = transpose(new_board)
@@ -214,8 +210,8 @@ class ConnectFourBoard(object):
         0 if the player has no tokens on the board
         """
         longest = 0
-        for i in xrange(self.board_height):
-            for j in xrange(self.board_width):
+        for i in range(self.board_height):
+            for j in range(self.board_width):
                 if self.get_cell(i,j) == playerid:
                     longest = max( longest, self._max_length_from_cell(i,j) )
 
@@ -275,8 +271,8 @@ class ConnectFourBoard(object):
         as is this collection of chains.
         """
         retVal = set()
-        for i in xrange(self.board_height):
-            for j in xrange(self.board_width):
+        for i in range(self.board_height):
+            for j in range(self.board_width):
                 if self.get_cell(i,j) == playerid:
                     retVal.update( self._chain_sets_from_cell(i,j) )
                     
@@ -291,8 +287,8 @@ class ConnectFourBoard(object):
         #if hasattr(self, "_is_win"):
         #    return self._is_win
         #else:
-        for i in xrange(self.board_height):
-            for j in xrange(self.board_width):
+        for i in range(self.board_height):
+            for j in range(self.board_width):
                 cell_player = self.get_cell(i,j)
                 if cell_player != 0:
                     win = self._is_win_from_cell(i,j)
@@ -331,7 +327,7 @@ class ConnectFourBoard(object):
     def __unicode__(self):
         """ Return a string representation of this board """
         retVal = [ u"  " + u' '.join([str(x) for x in range(self.board_width)]) ]
-        retVal += [ unicode(i) + ' ' + u' '.join([self.board_symbol_mapping[x] for x in row]) for i, row in enumerate(self._board_array) ]
+        retVal += [ str(i) + ' ' + u' '.join([self.board_symbol_mapping[x] for x in row]) for i, row in enumerate(self._board_array) ]
         return u'\n' + u'\n'.join(retVal) + u'\n'
 
     def __str__(self):
@@ -406,24 +402,24 @@ class ConnectFourRunner(object):
             for callback, id, symbol in ( player1, player2 ):
                 if verbose:
                     if sys.stdout.encoding and 'UTF' in sys.stdout.encoding:
-                        print unicode(self._board)
+                        print (str(self._board))
                     else:
-                        print str(self._board)
+                        print (str(self._board))
 
                 has_moved = False
 
                 while not has_moved:
                     try:
                         new_column = callback(self._board.clone())
-                        print "Player %s (%s) puts a token in column %s" % (id, symbol, new_column)
+                        print ("Player %s (%s) puts a token in column %s" % (id, symbol, new_column))
                         self._board = self._board.do_move(new_column)
                         has_moved = True
-                    except InvalidMoveException, e:
+                    except InvalidMoveException as e:
                         if sys.stdout.encoding and 'UTF' in sys.stdout.encoding:
-                            print unicode(e)
+                            print (str(e))
                         else:
-                            print str(e)
-                            print "Illegal move attempted.  Please try again."
+                            print (str(e))
+                            print ("Illegal move attempted.  Please try again.")
                             continue
 
                 if self._board.is_game_over():
@@ -434,7 +430,7 @@ class ConnectFourRunner(object):
         win_for_player = self._board.is_win()
                 
         if win_for_player != 0 and self._board.is_tie():
-            print "It's a tie!  No winner is declared."
+            print ("It's a tie!  No winner is declared.")
             return 0
         else:
             self._do_gameend(win_for_player)
@@ -442,11 +438,11 @@ class ConnectFourRunner(object):
 
     def _do_gameend(self, winner):
         """ Someone won!  Handle this eventuality. """
-        print "Win for %s!" % self._board.board_symbol_mapping[winner]
+        print ("Win for %s!" % self._board.board_symbol_mapping[winner])
         if sys.stdout.encoding and 'UTF' in sys.stdout.encoding:
-            print unicode(self._board)
+            print (str(self._board))
         else:
-            print str(self._board)
+            print( str(self._board))
 
 
 def human_player(board):
@@ -456,12 +452,12 @@ def human_player(board):
     target = None
 
     while type(target) != int:
-        target = raw_input("Pick a column #: --> ")
+        target = input("Pick a column #: --> ")
         try:
             target = int(target)
         except ValueError:
-            print "Please specify an integer column number"
-
+            print( "Please specify an integer column number"
+)
     return target
 
         

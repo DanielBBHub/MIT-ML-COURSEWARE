@@ -29,7 +29,7 @@ def get_all_next_moves(board):
     """ Return a generator of all moves that the current player could take from this position """
     from connectfour import InvalidMoveException
 
-    for i in xrange(board.board_width):
+    for i in range(board.board_width):
         try:
             yield (i, board.do_move(i))
         except InvalidMoveException:
@@ -86,7 +86,7 @@ def minimax(board, depth, eval_fn = basic_evaluate,
             best_val = (val, move, new_board)
             
     if verbose:
-        print "MINIMAX: Decided on column %d with rating %d" % (best_val[1], best_val[0])
+        print ("MINIMAX: Decided on column %d with rating %d" % (best_val[1], best_val[0]))
 
     return best_val[1]
 
