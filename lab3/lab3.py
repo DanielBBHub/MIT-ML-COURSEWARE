@@ -14,7 +14,7 @@ from util import INFINITY
 #      1. MM will play better than AB.
 #      2. AB will play better than MM.
 #      3. They will play with the same level of skill.
-ANSWER1 = 0
+ANSWER1 = 3
 
 # 1.2. Two computerized players are playing a game with a time limit. Player MM
 # does minimax search with iterative deepening, and player AB does alpha-beta
@@ -24,7 +24,7 @@ ANSWER1 = 0
 #   1. MM will play better than AB.
 #   2. AB will play better than MM.
 #   3. They will play with the same level of skill.
-ANSWER2 = 0
+ANSWER2 = 2
 
 ### 2. Connect Four
 from connectfour import *
@@ -41,7 +41,7 @@ import tree_searcher
 #run_game(human_player, basic_player)
 
 ## Uncomment this line to play a game as black:
-run_game(basic_player, human_player)
+# run_game(basic_player, human_player)
 
 ## Or watch the computer play against itself:
 #run_game(basic_player, basic_player)
@@ -57,6 +57,7 @@ def focused_evaluate(board):
     A return value >= 1000 means that the current player has won;
     a return value <= -1000 means that the current player has lost
     """    
+    
     raise NotImplementedError
 
 
@@ -72,6 +73,7 @@ quick_to_win_player = lambda board: minimax(board, depth=4,
 ## that can't improve the result. The tester will check your pruning by
 ## counting the number of static evaluations you make.
 ##
+
 ## You can use minimax() in basicplayer.py as an example.
 def alpha_beta_search(board, depth,
                       eval_fn,
@@ -98,6 +100,7 @@ ab_iterative_player = lambda board: \
                         search_fn=alpha_beta_search,
                         eval_fn=focused_evaluate, timeout=5)
 #run_game(human_player, alphabeta_player)
+
 
 ## Finally, come up with a better evaluation function than focused-evaluate.
 ## By providing a different function, you should be able to beat

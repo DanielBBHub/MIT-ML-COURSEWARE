@@ -24,7 +24,6 @@ def basic_evaluate(board):
 
     return score
 
-
 def get_all_next_moves(board):
     """ Return a generator of all moves that the current player could take from this position """
     from connectfour import InvalidMoveException
