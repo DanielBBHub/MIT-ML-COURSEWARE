@@ -77,6 +77,7 @@ def focused_evaluate(board):
                         # Comprobacion de la cantidad de casillas horizontales conectadas 
 
                         if i<6 and linea[i + 1] == casilla:
+                            res_dict.update({casilla: res_dict[casilla] + 1})
                             conectividad_horizontal += 1
                             # Si es = 3 se comprueba que no haya ninguna a ese lado para colocar la casilla ganadora
                             if conectividad_horizontal == 3:
@@ -104,8 +105,10 @@ def focused_evaluate(board):
                             # Comprobacion de la cantidad de casillas en diagonal conectadas
                             if i_C + i_neg >= 1 and i_C + i_pos + 1 <= 5:
                                 if linea_evaluada[i_C + i_neg] == casilla:
+                                    res_dict.update({casilla: res_dict[casilla] + 1})
                                     conectividad_diagonal_neg += 1
                                 elif linea_evaluada[i_C + i_pos] == casilla:
+                                    res_dict.update({casilla: res_dict[casilla] + 1})
                                     conectividad_diagonal_pos += 1
                                 else:
                                     break
