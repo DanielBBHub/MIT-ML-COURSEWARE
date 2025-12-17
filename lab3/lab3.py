@@ -68,19 +68,59 @@ def focused_evaluate(board):
     # TODO: EVALUAR DIAGONALES, VERTICALES Y HORIZONTALES PARA COMPROBAR TOTALIDAD DE CONEXIONES Y POSIBLES CASOS DE VICTORIA
     for i_L, linea in enumerate(reversed_board_array, 0):
         for i_C, casilla in enumerate(linea):
-            if casilla is not 0:
+            if casilla != 0:
                 res_dict.update({casilla: res_dict[casilla] + 1})
                 if i_C != 0 and i_C != 6:
+                    conectividad_horizontal = 1
+                    # Comprobacion del patron de 4 casillas en horizontal conectadas [situacion de victoria/derrota]
+                    for i in range(len(linea[i_L:])):
+                        if i<6 and linea[i + 1] == casilla:
+                            conectividad_horizontal += 1
+                            if conectividad_horizontal == 3:
+                                if linea[i + 1] == 0:
+                                    if players[0] == 1:
+                                        return 1000
+                                    else:
+                                        return -1000
+                            
                     casillas_adyacentes = [linea[i_C - 1], linea[i_C + 1]]
                     for casilla_ady in casillas_adyacentes:
                         if casilla_ady == casilla:
                             res_dict.update({casilla: res_dict[casilla] + 1})
+
                     if i_L != 5:
+                        # Comprobacion de la conectividad en diagonal [situacion de victoria/derrota]
+                        conectividad_diagonal_neg = 1
+                        i_neg, i_pos = 0, 0
+                        conectividad_diagonal_pos = 1
+                        for i_linea_evaluada, linea_evaluada in enumerate(reversed_board_array[i_L:]):
+                            if i_C + i_neg >= 1 and i_C + i_pos + 1 <= 5:
+                                if linea_evaluada[i_C + i_neg] == casilla:
+                                    conectividad_diagonal_neg += 1
+                                if linea_evaluada[i_C + i_pos] == casilla:
+                                    conectividad_diagonal_pos += 1
+                                win = False
+                                if conectividad_diagonal_neg == 3 or conectividad_diagonal_pos == 3:
+                                    if linea_evaluada[i_C + i_neg - 1] != 0 and reversed_board_array[i_linea_evaluada + 1][i_C + i_neg - 1] == 0:
+                                        win = True
+                                    if linea_evaluada[i_C + i_pos + 1] != 0 and reversed_board_array[i_linea_evaluada + 1][i_C + i_pos + 1] == 0:
+                                        win = True
+                                    
+                                    if win:
+                                        if players[0] == 1:
+                                            return 1000
+                                        else:
+                                            return -1000
+                                    
+                                    i_neg -= 1
+                                    i_pos += 1
+
                         casillas_superiores = linea[i_C -1: i_C + 1]
                         for casilla_sup in casillas_superiores:
                             if casilla_sup == casilla:
                                 res_dict.update({casilla: res_dict[casilla] + 1})
 
+    print(f"RESULTADO DE LA EVALUACION DE NODO: {(res_dict[players[0]] - res_dict[players[1]])}puntos")
     return (res_dict[players[0]] - res_dict[players[1]])
     # raise NotImplementedError
 
