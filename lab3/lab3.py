@@ -57,8 +57,32 @@ def focused_evaluate(board):
     A return value >= 1000 means that the current player has won;
     a return value <= -1000 means that the current player has lost
     """    
-    
-    raise NotImplementedError
+    res_dict = {}
+    players = [board.get_current_player_id(), board.get_other_player_id()]
+    for player in players:
+        res_dict.setdefault(player, 0)
+
+    board_array = board.get_board_array()
+    reversed_board_array = list(reversed(board_array))
+
+    # TODO: EVALUAR DIAGONALES, VERTICALES Y HORIZONTALES PARA COMPROBAR TOTALIDAD DE CONEXIONES Y POSIBLES CASOS DE VICTORIA
+    for i_L, linea in enumerate(reversed_board_array, 0):
+        for i_C, casilla in enumerate(linea):
+            if casilla is not 0:
+                res_dict.update({casilla: res_dict[casilla] + 1})
+                if i_C != 0 and i_C != 6:
+                    casillas_adyacentes = [linea[i_C - 1], linea[i_C + 1]]
+                    for casilla_ady in casillas_adyacentes:
+                        if casilla_ady == casilla:
+                            res_dict.update({casilla: res_dict[casilla] + 1})
+                    if i_L != 5:
+                        casillas_superiores = linea[i_C -1: i_C + 1]
+                        for casilla_sup in casillas_superiores:
+                            if casilla_sup == casilla:
+                                res_dict.update({casilla: res_dict[casilla] + 1})
+
+    return (res_dict[players[0]] - res_dict[players[1]])
+    # raise NotImplementedError
 
 
 ## Create a "player" function that uses the focused_evaluate function
