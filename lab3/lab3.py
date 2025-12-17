@@ -74,14 +74,19 @@ def focused_evaluate(board):
                     conectividad_horizontal = 1
                     # Comprobacion del patron de 4 casillas en horizontal conectadas [situacion de victoria/derrota]
                     for i in range(len(linea[i_L:])):
+                        # Comprobacion de la cantidad de casillas horizontales conectadas 
+
                         if i<6 and linea[i + 1] == casilla:
                             conectividad_horizontal += 1
+                            # Si es = 3 se comprueba que no haya ninguna a ese lado para colocar la casilla ganadora
                             if conectividad_horizontal == 3:
                                 if linea[i + 1] == 0:
                                     if players[0] == 1:
                                         return 1000
                                     else:
                                         return -1000
+                        else:
+                            break
                             
                     casillas_adyacentes = [linea[i_C - 1], linea[i_C + 1]]
                     for casilla_ady in casillas_adyacentes:
@@ -89,17 +94,24 @@ def focused_evaluate(board):
                             res_dict.update({casilla: res_dict[casilla] + 1})
 
                     if i_L != 5:
-                        # Comprobacion de la conectividad en diagonal [situacion de victoria/derrota]
+                        ## Comprobacion de la conectividad en diagonal [situacion de victoria/derrota]
+                        
+                        # Declaracion de las variables auxiliares
                         conectividad_diagonal_neg = 1
                         i_neg, i_pos = 0, 0
                         conectividad_diagonal_pos = 1
                         for i_linea_evaluada, linea_evaluada in enumerate(reversed_board_array[i_L:]):
+                            # Comprobacion de la cantidad de casillas en diagonal conectadas
                             if i_C + i_neg >= 1 and i_C + i_pos + 1 <= 5:
                                 if linea_evaluada[i_C + i_neg] == casilla:
                                     conectividad_diagonal_neg += 1
-                                if linea_evaluada[i_C + i_pos] == casilla:
+                                elif linea_evaluada[i_C + i_pos] == casilla:
                                     conectividad_diagonal_pos += 1
+                                else:
+                                    break
                                 win = False
+                                # Si es = 3, se comprueba que en la siguiente casilla en diagonal no haya ninguna casilla y que en la siguiente
+                                # pieza en horizontal haya una sobre la cual posicionar la casilla ganadora
                                 if conectividad_diagonal_neg == 3 or conectividad_diagonal_pos == 3:
                                     if linea_evaluada[i_C + i_neg - 1] != 0 and reversed_board_array[i_linea_evaluada + 1][i_C + i_neg - 1] == 0:
                                         win = True
