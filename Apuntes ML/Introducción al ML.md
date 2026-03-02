@@ -33,11 +33,11 @@ Es importante para este concepto, que el generador de soluciones esté bien acot
 
 Para abordar problemas complejos, como la siguiente integral:
 
-![[Pasted image 20251029134252.png]]
+![Integral compleja](fotos%20ml/Pasted%20image%2020251029134252.png)
 
 la estrategia consiste en descomponerlo en problemas más sencillos, un método conocido como **reducción de problemas**.
 
-![[Pasted image 20251029135000.png]]
+![Descomposición del problema](fotos%20ml/Pasted%20image%2020251029135000.png)
 
 Para resolver esta integral, se plantean una serie de teoremas que serán útiles tanto para este caso como para otros problemas de mayor complejidad.
 
@@ -48,18 +48,18 @@ Con el fin de verificar el proceso, se podría implementar un algoritmo con los 
 
 Dado que el tercer diagrama descompone la integral original en sub-integrales, el **árbol de reducción del problema** se expande. Esto introduce un **nodo "AND"**, el cual requiere que la resolución de todos sus subproblemas sea exitosa para considerar resuelto el problema principal.
 
-![[Pasted image 20251029135548.png]]
+![Árbol de reducción con nodo AND](fotos%20ml/Pasted%20image%2020251029135548.png)
 
 Con el "framework" construido hasta ahora (basado en el planteamiento de teoremas), el programa aún no sería capaz de resolver la integral completa. Debido a esta limitación, será necesario incorporar un **algoritmo heurístico**. El objetivo es transformar, **buscando equivalencias** para reducir/simplificar la resolución del problema.
 
 Con la resolución completa puede darse el caso de que existan **varias posibles soluciones a nuestro problema**, lo que nos llevaría a la adición de un **nodo "OR"** (una bifurcación adicional)
 
-![[Pasted image 20251029152910.png]]
+![Árbol con nodos AND y OR](fotos%20ml/Pasted%20image%2020251029152910.png)
 **(Para diferenciar entre nodos "AND" y "OR" se utiliza el cuarto de luna, formando una figura parecida a la A)**
 
 En este caso, para decidir entre los nodos derivados del OR, se evalua la profundidad de la expresión matemática. En esencia se ha hecho una **evaluación heurística** de los nodos resultantes para discernir que camino seguir para la resolución final.
 
-![[Pasted image 20251029154407.png]]
+![Algoritmo completo de resolución](fotos%20ml/Pasted%20image%2020251029154407.png)
 En definitiva, el programa aplica transformaciones cono conocidas (teoremas) y comprueba en la tabla. Si este problema esta resuelto, se valida. En caso de que no lo esté, se evalúan los nodos con el objetivo de encontrar un siguiente problema derivado del original (ya sean AND u OR) se comprueba si es posible aplicar una transformada heurística y se cierra el bucle.
 
 Con este procedimiento se logra resolver un problema complejo, reduciendo en apartados los diferentes pasos de la resolución y decidiendo que caminos se escogerán para realizar la resolución mas rápida
@@ -75,19 +75,19 @@ El enfoque que se debe tomar para empezar a desarrollar un programa de este esti
 
 En un ejemplo sencillo en el que un programa debe seguir un comando el cual ordena poner una caja encima de otra, se vuelve a generar un árbol de decisión/objetivo.
 
-![[Pasted image 20251030160632.png]]
+![Árbol de decisión para apilar cajas](fotos%20ml/Pasted%20image%2020251030160632.png)
 
 Este árbol contiene información que conforma una traza, información sobre el planteamiento y raciocinio de la solución.
 
 Se pueden responder preguntas de **"¿Porqué haces X?"** mirando hacia arriba en la traza, dándole sentido a las acciones dependiendo de los objetivos. A su vez, se pueden responder preguntas de **"¿Como haces X?"** bajando hacia abajo en la traza, dando respuesta a las acciones que hace por conseguir cierto objetivo.
 
-![[Pasted image 20251031081914.png]]
+![Metáfora de la hormiga de Simon](fotos%20ml/Pasted%20image%2020251031081914.png)
 
 La figura de arriba representa el camino de una hormiga en una playa (Linea blanca -> camino, figuras verdes -> obstaculos), descrito en la **metáfora de la hormiga de Simon**. Esta metáfora quiere representar que la complejidad del comportamiento de un programa viene dado por el máximo de la complejidad del programa y la complejidad del problema a resolver **{max(Ccomportamiento) = max(Cprograma, Cproblema)}**. 
 
 
 Los **sistemas basados en reglas** utilizan conocimiento encapsulado en simples reglas con las que hacen asociaciones para llegar a conclusiones
-![[Pasted image 20251031082939.png]]
+![Sistema basado en reglas - identificación de animales](fotos%20ml/Pasted%20image%2020251031082939.png)
 
 En este caso, un s**istema basado en reglas** utiliza los hechos presentados para enlazarlos de forma progresiva con el objetivo de llegar a la conclusión de que animal se esta hablando. Este sistema se considera **"Forward-Chaining"**.
 
@@ -104,17 +104,17 @@ Esto último es importante para mejorar el rendimiento del algoritmo, por que al
 
 Existe otro método de búsqueda llamado "Hill climbing" el cual ignora el orden léxico de los nodos y los ordena por su cercanía a la meta.
 
-![[Pasted image 20251104185222.png]]
+![Algoritmo Hill Climbing](fotos%20ml/Pasted%20image%2020251104185222.png)
 
 En este caso, la unión entre los nodos tenía asignada un valor arbitrario, el cual se ha utilizado para elegir el camino más corto, siendo este el resultado. Esto sería otro ejemplo mas de una evaluación heurística para agilizar el proceso de resolución del problema. (next(node) = min(length(NODEn)))
 
 Por último, existe la búsqueda **"BEAM"**, la cual es una variante de **"Breadth first"** con un número constante de niveles despues de los cuales parar, para aplicar una evaluación heurística.
-![[Pasted image 20251104185929.png]]
+![Algoritmo BEAM Search](fotos%20ml/Pasted%20image%2020251104185929.png)
 
 En este ejemplo se aplica una profundidad máxima de 2 nodos, tras los cuales se aplicará la misma evaluación heurística de antes, comprobar cual de los dos nodos está mas cerca del objetivo
 
 El algoritmo para implementar estas búsquedas quedaría de la siguiente manera:
-![[Pasted image 20251104190258.png]]
+![Algoritmo general de búsqueda](fotos%20ml/Pasted%20image%2020251104190258.png)
 
 El concepto es crear una cola y extender sobre los nodos elegidos, dependiendo del tipo de búsqueda que se realice tendrán las siguientes propiedades:
 - Depth first: se encolará al principio del a cola
@@ -131,7 +131,7 @@ El concepto es crear una cola y extender sobre los nodos elegidos, dependiendo d
 
 	Con estas denominaciones se pretende que el actor Max elija los nodos con mayor valor (asignados mediante evaluaciones heurísticas), mientras que para el actor Min lo contrario.
 
-![[Pasted image 20251214095818.png]]
+![Algoritmo Minimax](fotos%20ml/Pasted%20image%2020251214095818.png)
 
 	En este ejemplo, el jugador Min escogería, lógicamente, el nodo con valor 2; el nodo con mayor valor dentro de sus opciones, dejando al jugador Max con las opciones 2 y 7, de las cuales elegiria el 7.
 
@@ -141,7 +141,7 @@ El concepto es crear una cola y extender sobre los nodos elegidos, dependiendo d
 
 	El algorítmo Alpha-Beta intenta solucionar este problema eliminando ramas enteras basandose en sus valores estáticos. Se evaluan el valor de los nodos finales y se les adjudica valores a los nodos previos. El resultado de esta búsqueda de una solución no es ni el mayor ni el menor número, si no el mayor número dentro de un camino en el que se han hecho compromisos para maximizar los valores del actor Max mientras que se minimizaban los valores para el actor Min
 
-![[Pasted image 20251214102821.png]]
+![Algoritmo Alpha-Beta](fotos%20ml/Pasted%20image%2020251214102821.png)
 
 
 # 7. Restricciones: Interpretar dibujos lineales
@@ -150,7 +150,7 @@ Con el objetivo de poder reconocer objetos en imágenes y partiendo de la repres
 
 Para esta tarea se desarrolla la teoria del doble enlace, en la cual se define como parte de un objeto aquellos vertices de tres caras; los vertices que están conectados por 2 enlaces varias veces
 
-![[Pasted image 20260205175330.png]]
+![Teoría del doble enlace](fotos%20ml/Pasted%20image%2020260205175330.png)
 
 Es interesante ver la representación como grafo de los diferentes vértices y sus relaciones, las cuales nos revelan las diferentes caras de los objetos.
 
@@ -175,7 +175,7 @@ Con problemas como el de colorear todas las comunidades autonomas sin que ningun
 
 Podemos tener en consideración las restricciones que nos plantean los diferentes vecinos para plantear las diferentes posibilidades que tenemos para tomar una decisión.
 
- ![[Pasted image 20260226162942.png]]
+![Problema de coloreo de mapas](fotos%20ml/Pasted%20image%2020260226162942.png)
 	 
 Como podemos ver en el ejemplo de la figura, en una primera evaluación se ha elegido el color amarillo, que acababa la rotación RGBY y no rompía la regla, pero al llegar al estado de Texas se ha visto imposible colorear con ningún de estos colores, con lo que se ha vuelto a LA, se ha reevaluado pintándolo de rojo y de esta manera se ha quedado el amarillo libre para poder cumplir con la restricción.
 
@@ -192,12 +192,12 @@ En el ejemplo anterior, los estados serían las variables, los colores son valor
 
 A esta manera de proceder se le denomina "Reducción de dominio"
 
-![[Pasted image 20260226164621.png]]
+![Algoritmo de reducción de dominio](fotos%20ml/Pasted%20image%2020260226164621.png)
 
 Hay que apuntar que el segundo punto de iteración "Por cada variable Vi considerada" queda abierta a interpretación, ya que podríamos considerar diferente número de estados dependiendo de unos u otros criterios. Es importante definir "como consideramos" las variables por que impactaran grandemente en la ejecución de la resolución.
 
 Las posibles consideraciones para la resolución del ejemplo anterior pueden ser las siguientes:
-![[Pasted image 20260226165632.png]]
+![Estrategias de resolución de restricciones](fotos%20ml/Pasted%20image%2020260226165632.png)
 Las opciones 3,4 y 5 son especialmente interesantes debido a que si resuelven el problema:
 3. Comprueba los vecinos antes de asignar un valor: Tiene el problema de encontrarse con muchos puntos muertos debido al poco alcance de consideración que tiene
 4. Propagar la comprobación a otras variables con el dominio reducido a 1 valor: resuelve el problema con dificultad reducida al no tener que comprobar restricciones para un dominio grande, sin puntos muertos 
@@ -207,13 +207,13 @@ Las opciones 3,4 y 5 son especialmente interesantes debido a que si resuelven el
 
 Una de las estrategias del reconocimiento visual de objetos es encontrar puntos reconocibles en la forma del objeto a detectar (pj: vertices) y mediante una base de conocimiento previa, que depende de la cantidad de variables de movimiento pueda tener el objeto, podemos calcular una correlación entre las posciones [x,y] de los puntos que queremos detectar en la figura.
 
-![[Pasted image 20260302201054.png]]
+![Reconocimiento visual por correlación de puntos](fotos%20ml/Pasted%20image%2020260302201054.png)
 
 En la figura anterior podemos ver como se correlacionan los puntos en las muestras A,B y C y, gracias a esa relación entre coordenadas, se podrá adivinar en la figura input, permitiendonos detectar el objeto en cuestión.
 
 Esta detección se puede hacer en el caso idilico de tener una vista ortografica de la figura (en la cual no aplique la profundidad de campo). Además, cuantos mas grados de libertad haya en las posibles entradas, mas variables habrá que calcular en la correlación de los puntos a detectar.
 
-![[Pasted image 20260302201358.png]]
+![Cálculo de correlación con rotación](fotos%20ml/Pasted%20image%2020260302201358.png)
 
 En el caso de tener rotación únicamente en el eje Z, podemos utilizar las proyecciones para calcular el ángulo de rotación de los puntos, calculando así la relación lineal que siguen los puntos en las diferentes figuras.
 
