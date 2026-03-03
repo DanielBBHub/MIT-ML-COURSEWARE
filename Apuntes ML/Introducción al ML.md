@@ -219,3 +219,57 @@ En el caso de tener rotación únicamente en el eje Z, podemos utilizar las proy
 
 El problema de este acercamiento a la solución es la rigidez del marco de trabajo; esta únicamente funciona si tiene puntos reconocibles, una vista ortografica y mantienen el tamaño entre muestras, lo cual hace de este método uno poco aceptable para "el mundo natural" en el que las figuras u objetos que representan las imágenes son irregulares e imperfectas.
 
+Otra de las tácticas que se pueden utilizar es intentar encontrar en la imagen características intermedias de los objetos que queremos detectar en una imágen. 
+
+Pj: Queremos implementar un detector de caras. 
+1. Si nuestra base de conocimiento fuese únicamente las diferentes características de la cara aisladas, tendriamos una base muestral que se comprendría de ojos, narices, bocas ... Lo cual, por sus características de forma y tamaño podrían dar pie a reconocimientos de pomos de puertas, o de figuras alargadas con forma de semiluna. 
+2. Tampoco sería una buena solución intentar partir de caras al completo, ya que raramente las caras se parecen lo suficiente como para que haya un match completo
+3. La estrategia a seguir sería encontrar patrones intermedios que, en su conjunto, describiesen las características principales del objeto a detectar, como podría ser la combinación de dos ojos y una nariz, o una nariz y una boca
+
+En este caso podría tratarse la señal de la imagen 2d para comparar los máximos de señal y encontrar las características deseadas
+
+# 10. Introducción al aprendizaje, vecinos cercanos
+El aprendizaje puede darse de dos maneras distintas:
+1. Aprendizaje basado en observaciones / regularidad - computación bulldozer
+	1. Vecinos cercanos (nearest neighbours) - reconocimiento de patrones
+	2. Redes neuronales (neural nets) - intento de imitar la biologia
+	3. Boosting - teoria
+2. Restricciones - naturaleza humana
+	1. Una unica vez (one shot)
+	2. Aprendizaje por explicación (explanation based learning)
+
+En este apartado se explica el método de reconocimiento de objetos por vecinos cercanos. Este se basa en el concepto de la detección de características del objeto y la comparación con una base de conocimiento previamente adquirida, la cual nos conduce hasta la respuesta de "que objeto es".
+
+Pj: 
+imagen de cuadrado -> 4 lados, area completa - > comparacion características - > cuadrado
+imagen de triangulo -> 3 lados, area completa -> comparación características-> triangulo
+imagen donut -> 1 lado continuo, area con agujero -> comparacion características-> donut
+
+El concepto clave es, una vez tienes el muestreado original, debido a la posible variabilidad que puede introducir la entrada al sistema, las muestras no siempre caerán en el mismo punto del espacio donde está la referencia, pero si cerca.  Uno de los acercamientos posibles sería calcular la distancia de la muestra entre las diferentes muestras de referencia y asignarla a la mas cercana, por otro lado podrían asignarse estaticamente espacios para cada una de las muestras y separar directamente los resultados.
+
+Con esta información se podrán distinguir las diferentes clases (objetos), separandolas por distancias a las referencias y agrupando todas las muestras en diferentes categorías.
+
+
+# 11. Aprendizaje: arboles de identificación, desorden
+
+En el caso de que nuestra ase de conocimiento sea una representando información simbólica (no numérica), el método de vecinos mas cercanos no es aplicable. 
+
+Esta información puede que no sea importante para llegar a una conclusión o solo importe en ciertos casos. También es importante contemplar que el calculo para realizar la clasificación puede ser costoso.
+
+Para este tipo de informaciones, se contempla en el marco de trabajo de pruebas, lo que lleva a componer un árbol de pruebas o "Árbol de identificación". Para evaluar estos árboles se calcula el número de datasets homogéneos que generan las diferentes pruebas planteadas (clasificación de la base de conocimiento. pj: cabeceras de una tabla). La que mayor coeficiente tiene se aplica al principio, si resta algún dataset heterogéneo, se vuelve a calcular la puntuación de los tests con la información restante.
+
+Esto último se relaciona con la navaja de ocam, "usualmente, la solución mas sencilla tiende a ser la solución correcta".
+
+![Cálculo de desorden en árboles de identificación](fotos%20ml/Pasted%20image%2020260303095611.png)
+
+Para grandes volúmenes de datos, es improbable que separe los grupos en particiones homogéneas, con lo que habría que evaluar las pruebas de forma alternativa, una forma de medir el desorden.
+
+![Medición del desorden](fotos%20ml/Pasted%20image%2020260303094439.png)
+
+Esta herramienta nos premite medir el desorden para cada uno de los subsets, con lo que si sumamos los diferentes valores de desorden de los diferentes subgrupos resultantes de la prueba, podremos darle un valor numérico para poder elegir entre unas u otras pruebas. También hay que tener en cuenta la cantidad de muestras de cada uno de los grupos comparado con las muestras que han entrado en la prueba.
+
+![Factor de ponderación por tamaño de muestra](fotos%20ml/Pasted%20image%2020260303094919.png)
+
+![Ejemplo de árbol de decisión 1](fotos%20ml/Pasted%20image%2020260303095307.png) ![Ejemplo de árbol de decisión 2](fotos%20ml/Pasted%20image%2020260303095519.png)
+
+Una vez vistos los resultados de los árboles anteriores, podemos llegar a la conclusión de que, en ocasiones, se pueden simplificar las reglas sin afectar al resultado final de identificación. En el ejemplo de reconocimiento de vampiros que se presenta, podemos observar que toda la gente que come ajo, no es vampiro, con lo que la prueba de la sombra es redundante, con lo que podemos obviarla y hacer un sistema mas simple.
