@@ -1,13 +1,9 @@
-import xmlrpclib
 import traceback
 import sys
 import os
 import tarfile
+from io import StringIO
 
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
 
 
 # This is a skeleton for what the tester should do. Ideally, this module

@@ -9,6 +9,7 @@ from csp import BinaryConstraint, CSP, CSPState, Variable,\
 
 # Implement basic forward checking on the CSPState see csp.py
 def forward_checking(state, verbose=False):
+    
     # Before running Forward checking we must ensure
     # that constraints are okay for this state.
     basic = basic_constraint_checker(state, verbose)
@@ -17,7 +18,32 @@ def forward_checking(state, verbose=False):
 
     # Add your forward checking logic here.
     
-    raise NotImplementedError
+    # Let X be the variable currently being assigned.
+    current_X = state.get_current_variable()
+    if current_X == None:
+        current_X = state.get_variable_by_index(0)
+
+    # Find all the binary constraints that are associated with X. 
+    current_consts = state.get_constraints_by_name(current_X.get_name())
+
+    for const in current_consts:
+        # Let Y be the variable connected to X by that binary constraint. 
+        # For each variable value y in Y's domain
+        current_Y_name = const.get_variable_j_name()
+        current_Y = state.get_variable_by_name(current_Y_name)
+        current_Y_dom = current_Y.get_domain()
+        for val_y in current_Y_dom:
+            # If constraint checking fails for X=x and Y=y
+                if not const.check(state, current_X.get_assigned_value(), val_y):
+                # Remove y from Y's domain
+                    current_Y.reduce_domain(val_y)
+                # If the domain of Y is reduced down to the empty set, then the entire check fails:
+                if len(current_Y.get_domain()) == 0:
+                    # return False.
+                    return False
+            
+    return True    
+    # raise NotImplementedError
 
 # Now Implement forward checking + (constraint) propagation through
 # singleton domains.

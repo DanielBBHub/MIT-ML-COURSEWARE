@@ -28,13 +28,13 @@ def title_case(str):
     return ''.join(chars)
 
 state_codes = {}
-f = open('states.dat')
+f = open('states.dat', 'r', encoding='utf-8', errors='replace')
 for line in f:
     state_codes[int(line[0:2])] = title_case(line[6:].strip())
 f.close()
 
 party_codes = {}
-f = open('party3.dat')
+f = open('party3.dat', 'r', encoding='utf-8', errors='replace')
 for line in f:
     party_codes[int(line[2:6])] = line[8:].strip()
 f.close()
@@ -49,7 +49,7 @@ def read_congress_data(filename):
     Reads a database of Congressional information in the format that comes
     from Keith T. Poole's voteview.com.
     """
-    f = open(filename)
+    f = open(filename, 'r', encoding='utf-8', errors='replace')
     legislators = []
     for line in f:
         line = line.rstrip()
@@ -68,7 +68,7 @@ def read_vote_data(filename):
     """
     Reads a CSV file of data on the votes that were taken.
     """
-    f = open(filename)
+    f = open(filename, 'r', encoding='utf-8', errors='replace')
     csv_reader = csv.reader(f)
     votes = []
     for row in csv_reader:

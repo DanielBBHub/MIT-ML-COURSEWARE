@@ -91,7 +91,7 @@ class BinaryConstraint:
         if value_i is not None and value_j is not None:
             return self.check_func(value_i, value_j,
                                    self.var_i_name, self.var_j_name)
-        else:
+        elif value_i is None and value_j is None:
             raise Exception("neither value_i nor value_j are set")
 	
         # if values of i or j are not set, we really can't check
