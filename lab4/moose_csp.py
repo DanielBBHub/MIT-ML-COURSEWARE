@@ -31,8 +31,8 @@ def moose_csp_problem():
     # now we construct the set of non-adjacent seat pairs.
     nonadjacent_pairs = []
     variable_names = ["1", "2", "3", "4", "5", "6"]
-    for x in xrange(len(variable_names)):
-        for y in xrange(x,len(variable_names)):
+    for x in range(len(variable_names)):
+        for y in range(x,len(variable_names)):
             if x == y:
                 continue
             tup = (variable_names[x], variable_names[y])

@@ -91,8 +91,8 @@ class BinaryConstraint:
         if value_i is not None and value_j is not None:
             return self.check_func(value_i, value_j,
                                    self.var_i_name, self.var_j_name)
-	else:
-	    raise Exception("neither value_i nor value_j are set")
+        else:
+            raise Exception("neither value_i nor value_j are set")
 	
         # if values of i or j are not set, we really can't check
         # this constraint.  So the check passes.
@@ -274,16 +274,17 @@ def basic_constraint_checker(state, verbose=False):
     """
     constraints = state.get_all_constraints()
     for constraint in constraints:
-	var_i = state.get_variable_by_name(constraint.get_variable_i_name())
-	var_j = state.get_variable_by_name(constraint.get_variable_j_name())
+        var_i = state.get_variable_by_name(constraint.get_variable_i_name())
+        var_j = state.get_variable_by_name(constraint.get_variable_j_name())
 	
-	if not var_i.is_assigned() or not var_j.is_assigned():
-	    continue
+        if not var_i.is_assigned() or not var_j.is_assigned():
+            continue
 	
         if not constraint.check(state):
             if verbose:
-                print "CONSTRAINT-FAILS: %s" %(constraint)
+                print( "CONSTRAINT-FAILS: %s" %(constraint))
             return False
+    
     return True
 
 class CSP:
@@ -344,12 +345,12 @@ class CSP:
             cur_node.step = step
             
             if verbose:
-                print "-"*20
-                print "%d. EXAMINING:\n%s" %(step, state.vd_table())
+                print( "-"*20)
+                print( "%d. EXAMINING:\n%s" %(step, state.vd_table()))
         
             if not constraint_checker(state, verbose):
                 if verbose:
-                    print "%d. FAIL:\n%s" %(step, state.vd_table())
+                    print( "%d. FAIL:\n%s" %(step, state.vd_table()))
                 cur_node.status = Node.FAILED
                 step += 1
                 continue
@@ -357,12 +358,12 @@ class CSP:
             if state.is_solution():
                 cur_node.status = Node.SOLUTION
                 if verbose:
-                    print "%d. SOLUTION:\n%s" %(step, state.vd_table())
+                    print( "%d. SOLUTION:\n%s" %(step, state.vd_table()))
                 return state, search_root
 
             cur_node.status = Node.CONTINUE
             if verbose:
-                print "%d. CONTINUE:\n%s" %(step, state.vd_table())
+                print( "%d. CONTINUE:\n%s" %(step, state.vd_table()))
         
 
             next_variable_index = state.variable_index + 1
@@ -465,12 +466,12 @@ def solve_csp_problem(problem, checker, verbose=False):
 
     if verbose:
         if answer is not None:
-            print "ANSWER: %s" %(answer.solution())
+            print( "ANSWER: %s" %(answer.solution()))
         else:
-            print "NO SOLUTION FOUND"
+            print( "NO SOLUTION FOUND")
         if search_tree is not None:
-            print "TREE:\n"
-            print search_tree.tree_to_string(search_tree)
+            print( "TREE:\n")
+            print( search_tree.tree_to_string(search_tree))
         
     return answer, search_tree
         

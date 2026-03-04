@@ -104,14 +104,14 @@ def limited_house_classifier(house_people, house_votes, n, verbose = False):
     house_limited_group1, house_limited_group2 = crosscheck_groups(house_limited)
 
     if verbose:
-        print "ID tree for first group:"
-        print CongressIDTree(house_limited_group1, house_limited_votes,
-                             information_disorder)
-        print
-        print "ID tree for second group:"
-        print CongressIDTree(house_limited_group2, house_limited_votes,
-                             information_disorder)
-        print
+        print( "ID tree for first group:")
+        print( CongressIDTree(house_limited_group1, house_limited_votes,
+                             information_disorder) )
+        print()
+        print( "ID tree for second group:" )
+        print( CongressIDTree(house_limited_group2, house_limited_votes,
+                             information_disorder) )
+        print()
         
     return evaluate(idtree_maker(house_limited_votes, information_disorder),
                     house_limited_group1, house_limited_group2)
@@ -144,6 +144,6 @@ def eval_test(eval_fn, group1, group2, verbose = 0):
     if eval_fn in [ 'my_classifier' ]:
         return evaluate(globals()[eval_fn], group1, group2, verbose)
     else:
-        raise Exception, "Error: Tester tried to use an invalid evaluation function: '%s'" % eval_fn
+        raise Exception( "Error: Tester tried to use an invalid evaluation function: '%s'" % eval_fn )
 
     

@@ -137,7 +137,7 @@ make_test(type = 'FUNCTION',
           )
 
 def euclidean_distance_3_getargs():
-    return [ [random_list(3), random_list(3)] for x in xrange(30) ]
+    return [ [random_list(3), random_list(3)] for x in range(30) ]
 
 def euclidean_distance_3_testanswer(val, original_val = None):
     return len(val) == 30 and all([validate_euclidean_distance(list1, list2, ans) for (ans, (list1, list2)) in zip(val, original_val) ])

@@ -24,10 +24,10 @@ grid.append([0,0,0,0,6,4,0,0,0])
 def sudoku_csp_problem(partial_grid=grid):
 
     #Ensure board is 9x9.  This could easily be extended to n^2 by n^2
-    if len(partial_grid)<>9: 'Error: Board must be 9x9'
+    if len(partial_grid)!=9: 'Error: Board must be 9x9'
 
     for i in range(len(partial_grid)):
-        if len(partial_grid[i])<>9:
+        if len(partial_grid[i])!=9:
             return 'Error: Board must be 9x9'
 
     # Initialize...
@@ -39,7 +39,7 @@ def sudoku_csp_problem(partial_grid=grid):
 
     #Initialize variables with one variable for each square.
     for (i,j) in indices:
-        if partial_grid[i-1][j-1]<>0:
+        if partial_grid[i-1][j-1]!=0:
             theval = [partial_grid[i-1][j-1]]
         else:
             theval = range(1,10)
@@ -80,7 +80,7 @@ def sudoku_csp_problem(partial_grid=grid):
     edges = []
     for v1 in variables:
         for v2 in variables:
-            if v1<>v2 and (i(v1) == i(v2) or j(v1) == j(v2) or getbox(i(v1),j(v1)) == getbox(i(v2),j(v2))):
+            if v1!=v2 and (i(v1) == i(v2) or j(v1) == j(v2) or getbox(i(v1),j(v1)) == getbox(i(v2),j(v2))):
                 edges.append((v1.get_name(),v2.get_name()))
             
 
@@ -136,4 +136,4 @@ if __name__ == "__main__":
 
     sol = solve_csp_problem(sudoku_csp_problem, checker, verbose=True)
     for row in make_solution_readable(sol):
-        print row
+        print( row)

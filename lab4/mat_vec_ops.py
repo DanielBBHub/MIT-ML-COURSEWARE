@@ -45,4 +45,4 @@ def validate_euclidean_distance(list1, list2, dist):
     return vector_compare(target, list2, 0.01)
 
 def random_list(length):
-    return [ random.randint(1,100) for x in xrange(length) ]
+    return [ random.randint(1,100) for x in range(length) ]
