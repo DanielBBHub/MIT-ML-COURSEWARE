@@ -21,7 +21,7 @@ def forward_checking(state, verbose=False):
     # Let X be the variable currently being assigned.
     current_X = state.get_current_variable()
     if current_X == None:
-        current_X = state.get_variable_by_index(0)
+        return True
 
     # Find all the binary constraints that are associated with X. 
     current_consts = state.get_constraints_by_name(current_X.get_name())
@@ -42,7 +42,8 @@ def forward_checking(state, verbose=False):
                     # return False.
                     return False
             
-    return True    
+    return True
+    
     # raise NotImplementedError
 
 # Now Implement forward checking + (constraint) propagation through
@@ -54,7 +55,55 @@ def forward_checking_prop_singleton(state, verbose=False):
         return False
 
     # Add your propagate singleton logic here.
-    raise NotImplementedError
+    # Create a queue of singleton variables
+    singleton_var = []
+    # Create a queue of visited singleton variables
+    visited_singleton_var = []
+
+    # Find variables with domains of size 1.
+    for var in state.get_all_variables():
+        if var.domain_size() == 1:
+            singleton_var.append(var)
+
+    singleton_var = sorted(singleton_var, key= lambda  obj: len(state.get_constraints_by_name(obj.get_name())), reverse=True)
+
+    while singleton_var:
+        # Pop off the first singleton variable X
+        current_var = singleton_var.pop(0)
+        current_var_name = current_var.get_name()
+
+        # Add X to list of visited singletons
+        visited_singleton_var.append(current_var)
+        # Find all the binary constraints that singleton X is associated with
+        # For each constraint therein
+        var_constraints = state.get_constraints_by_name(current_var_name)
+        for const in var_constraints:
+         # Let Y be the variable connected to X by that binary constraint      
+            var_j = state.get_variable_by_name(const.get_variable_j_name())
+            
+            # Obtener el valor singleton: puede estar asignado o ser el único valor del dominio
+            current_var_value = current_var.get_assigned_value() if current_var.is_assigned() else current_var.get_domain()[0]
+            
+         # For each value of y in Y's domain
+            for val_y in var_j.get_domain():  
+                # If constraint check fails for X = (X's singleton value) and Y = y
+                if not const.check(state, current_var_value, val_y):
+                    # Remove y from Y's domain
+                    var_j.reduce_domain(val_y)
+                
+                # If the domain of Y is reduced down to the empty set, then the entire check fails:
+                if var_j.domain_size() == 0:
+                    # return False.
+                    return False
+        
+        for var in state.get_all_variables():
+            if var.domain_size() == 1 and var not in visited_singleton_var and var not in singleton_var:
+                singleton_var.append(var)    
+
+
+        singleton_var = sorted(singleton_var, key= lambda  obj: len(state.get_constraints_by_name(obj.get_name())), reverse=True)
+
+    return True
 
 ## The code here are for the tester
 ## Do not change.
