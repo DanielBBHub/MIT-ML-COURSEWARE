@@ -238,9 +238,9 @@ old_senator_classified = limited_house_classifier(last_senate_people, last_senat
 
 
 ## The standard survey questions.
-HOW_MANY_HOURS_THIS_PSET_TOOK = ""
-WHAT_I_FOUND_INTERESTING = ""
-WHAT_I_FOUND_BORING = ""
+HOW_MANY_HOURS_THIS_PSET_TOOK = "12"
+WHAT_I_FOUND_INTERESTING = "forward_checking_prop_singleton"
+WHAT_I_FOUND_BORING = "searching n values"
 
 
 ## This function is used by the tester, please don't modify it!
