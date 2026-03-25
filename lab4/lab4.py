@@ -1,5 +1,6 @@
 from classify import *
 import math
+from collections import Counter
 
 ##
 ## CSP portion of lab 4.
@@ -164,15 +165,39 @@ my_classifier = nearest_neighbors(euclidean_distance, 1)
 evaluate(my_classifier, senate_group1, senate_group2, verbose=1)
 
 ### Part 2: ID Trees
-#print CongressIDTree(senate_people, senate_votes, homogeneous_disorder)
+# print (CongressIDTree(senate_people, senate_votes, homogeneous_disorder))
 
 ## Now write an information_disorder function to replace homogeneous_disorder,
 ## which should lead to simpler trees.
 
 def information_disorder(yes, no):
-    return homogeneous_disorder(yes, no)
+    # return homogeneous_disorder(yes, no)
+    count = Counter()
+    nb = len(yes) 
+    nb2 = len(no)
 
-#print CongressIDTree(senate_people, senate_votes, information_disorder)
+    for c1 in yes:
+        count[c1] +=  1
+    
+    res1 = 0
+    for k in count.keys():
+        res1 += - (count[k] / nb) * math.log( (count[k] / nb) ,2)
+
+    count = Counter()
+    for c2 in no:
+        count[c2] +=  1
+    
+    res2 = 0
+    for k2 in count.keys():
+        res2 += - (count[k2] / nb2) * math.log( (count[k2] / nb2) ,2)
+
+    nbt = nb + nb2
+
+    res = res1 * (nb / nbt) + res2 * (nb2 / nbt)
+    return res
+
+
+print (CongressIDTree(senate_people, senate_votes, information_disorder))
 #evaluate(idtree_maker(senate_votes, homogeneous_disorder), senate_group1, senate_group2)
 
 ## Now try it on the House of Representatives. However, do it over a data set
