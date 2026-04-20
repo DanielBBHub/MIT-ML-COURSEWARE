@@ -99,9 +99,9 @@ most_misclassified_boost = lambda n: most_misclassified(boost, n)
 
 ########################################################################
 def show_decisions(learner, data):
-    print "  "+learner.name+":"
+    print( "  "+learner.name+":")
     classifier = learner(data) # Train on the data
-    print "  "+str(classifier)
+    print( "  "+str(classifier))
     total = 0
     for i in range(len(data)): # Test each of the same data points
         decision = classifier(data[i])
@@ -112,32 +112,32 @@ def show_decisions(learner, data):
         print ("    %d: %5.3f -> %s (should be %s) %scorrect" %
                (i+1, probabilities[1], decision, data[i].getclass(),
                 ("" if correct else "in")))
-    print "    accuracy on training data: %1.2f" % (float(total)/len(data))
+    print ("    accuracy on training data: %1.2f" % (float(total)/len(data)))
 
 def describe_and_classify(filename, learners):
     data = orange.ExampleTable(filename)
-    print "Classes:",len(data.domain.classVar.values)
-    print "Attributes:",len(data.domain.attributes)
-
+    print ("Classes:",len(data.domain.classVar.values))
+    print ("Attributes:",len(data.domain.attributes)
+)
     # obtain class distribution
     c = [0] * len(data.domain.classVar.values)
     for e in data:
         c[int(e.getclass())] += 1
-    print "Instances:", len(data), "total",
+    print ("Instances:", len(data), "total",)
     for i in range(len(data.domain.classVar.values)):
-        print ",", c[i], "with class", data.domain.classVar.values[i],
+        print (",", c[i], "with class", data.domain.classVar.values[i],)
     print
-    print "Possible classes:", data.domain.classVar.values
+    print ("Possible classes:", data.domain.classVar.values)
 
     for name in learners:
         show_decisions(learners[name], data)
 
-    print "Decision Tree boundaries:"
+    print ("Decision Tree boundaries:")
     orngTree.printTxt(learners["dt"](data))
 
     # Now we'll cross-validate with the same learners.
     print
-    print "Accuracy with cross-validation:"
+    print ("Accuracy with cross-validation:")
 
 
     classifiers = [learners[k] for k in learners]
@@ -156,13 +156,13 @@ def describe_and_classify(filename, learners):
 
     # NOTE: many other measurements are available.
 
-    print "  Confusion Matrices:"
+    print ("  Confusion Matrices:")
     for name in learners:
         classifier = learners[name]
         i = classifiers.index(classifier)
-        print "  %5s: %s" % (name, confusion_matrices[i])
+        print ("  %5s: %s" % (name, confusion_matrices[i]))
 
-    print "  Classifier   accuracy   Brier       AUC"
+    print ("  Classifier   accuracy   Brier       AUC")
     for name in learners:
         classifier = learners[name]
         i = classifiers.index(classifier)
@@ -254,7 +254,7 @@ def boosted_ensemble(filename, learners, standard, verbose=False):
         # Print the ensemble classifier that was trained on all of the
         # data.  For debugging the constituents of the ensemble classifier.
         classifier = ensemble_learner(data)
-        print "ensemble classifier: %s" %(classifier)
+        print ("ensemble classifier: %s" %(classifier))
 
     ensemble_crossval = orngTest.crossValidation([ensemble_learner], data,
                                                  folds=min(10,len(data)))
@@ -279,7 +279,7 @@ if __name__ == "__main__":
     dataset = "H004"
 
     describe_and_classify(dataset, learners)
-    print "Boosting with our suite of orange classifiers:"
+    print ("Boosting with our suite of orange classifiers:")
     print ("  accuracy: %.3f, brier: %.3f, auc: %.3f" %
            boosted_ensemble(dataset, learners, DATASET_STANDARDS[dataset]))
 
@@ -318,7 +318,7 @@ def classifier_tester_helper(classifier_name, data_set):
             classifier.reset()
             classifier.train(original_classifier_count)
             return
-    raise Exception, "Error: Classifier %s doesn't exist!, can't test it" % classifier_name
+    raise Exception( "Error: Classifier %s doesn't exist!, can't test it" % classifier_name)
 
 from neural_net import *
 def neural_net_tester(network_maker_func,

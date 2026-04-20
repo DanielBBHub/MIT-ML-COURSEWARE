@@ -22,7 +22,7 @@ import orngTree
 import orngTest
 import orngStat
 import orngEnsemble
-print "Orange version:",orange.version
+print ("Orange version:",orange.version)
 #except ImportError:
 #    raise "Did not find the Orange framework.  http://www.ailab.si/orange/"
 
@@ -56,7 +56,7 @@ def write_congress_data(legislators, filename,
         if len(descriptions) != len(legislators[0]['votes']):
             print ("%s: %d != %d" %
                    (filename, len(descriptions), len(legislators[0]['votes'])))
-            print descriptions[0]
+            print (descriptions[0])
         print >>f, "party\t" + "\t".join([bill_identifier(v)
                                           for v in descriptions])
     else:
