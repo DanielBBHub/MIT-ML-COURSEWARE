@@ -8,6 +8,8 @@
 
 import math
 import random
+from functools import cmp_to_key
+from decimal import Decimal
 
 class ValuedElement(object):
     """
@@ -58,9 +60,9 @@ class Input(ValuedElement,DifferentiableElement):
         """
         Returns the output of this Input node.
         
-        returns: number (float or int)
+        returns: number (float or int)        
         """
-        raise NotImplementedError( "Implement me!")
+        return self.get_value()
 
     def dOutdX(self, elem):
         """
@@ -71,7 +73,7 @@ class Input(ValuedElement,DifferentiableElement):
 
         returns: number (float or int)
         """
-        raise NotImplementedError( "Implement me!")
+        return 0
 
 class Weight(ValuedElement):
     """
@@ -169,8 +171,22 @@ class Neuron(DifferentiableElement):
         the threshold function.
 
         returns: number (float or int)
+
+        The function produces the output of each of these elements.  
+        Be sure to use the sigmoid and ds/dz functions as discussed in class:  
+        o = s(z) = 1.0 / (1.0 + e**(-z)) 
+        ds(o)/dz = s(z) * (1 - s(z)) = o * (1 - o) 
+
+        Siendo z valor deseado y o valor obtenido (output)
+
         """
-        raise NotImplementedError( "Implement me!")
+        o_sum = Decimal(0)
+        for i,w in zip(self.my_inputs, self.my_weights):
+            o_sum += Decimal(i.output()) * Decimal(w.get_value())
+        
+        sig = Decimal(1) / (Decimal(1) + Decimal(math.e)**(-o_sum))
+
+        return sig
 
     def dOutdX(self, elem):
         # Implement compute_doutdx instead!!
@@ -190,7 +206,21 @@ class Neuron(DifferentiableElement):
 
         returns: number (float/int)
         """
-        raise NotImplementedError( "Implement me!")
+        output = self.output()
+        doutdp = output * (1 - output)
+
+        if self.has_weight(elem):
+            for i, w in zip(self.get_inputs(), self.get_weights()):
+                if elem is w:
+                    return doutdp * Decimal(i.output())
+        else:
+            input_sum = 0.0
+            for i, w in zip(self.get_inputs(), self.get_weights()):
+                if self.isa_descendant_weight_of(elem, w):
+                    input_sum += i.dOutdX(elem) * w.get_value()
+
+        return doutdp * Decimal(input_sum)
+       
 
     def get_weights(self):
         return self.my_weights
@@ -222,10 +252,12 @@ class PerformanceElem(DifferentiableElement):
     def output(self):
         """
         Returns the output of this PerformanceElem node.
-        
+        P(o) = -0.5 (d - o)**2
         returns: number (float/int)
         """
-        raise NotImplementedError( "Implement me!")
+        performance = Decimal(-0.5) * (Decimal(self.my_desired_val) - Decimal(self.my_input.output()))**2
+
+        return performance
 
     def dOutdX(self, elem):
         """
@@ -233,10 +265,12 @@ class PerformanceElem(DifferentiableElement):
         to some weight, given by elem.
 
         elem: an instance of Weight
-
+        dP(o)/dx = (d - o)
         returns: number (int/float)
         """
-        raise NotImplementedError( "Implement me!")
+
+        dp = (self.my_desired_val - self.get_input().output()) * self.get_input().dOutdX(elem)
+        return Decimal(dp)
 
     def set_desired(self,new_desired):
         self.my_desired_val = new_desired
@@ -256,7 +290,7 @@ class Network(object):
         self.performance = performance_node
         self.output = performance_node.get_input()
         self.neurons = neurons[:]
-        self.neurons.sort(cmp=alphabetize)
+        self.neurons.sort(key=cmp_to_key(alphabetize))
         for neuron in self.neurons:
             self.weights.extend(neuron.get_weights())
             for i in neuron.get_inputs():
@@ -386,9 +420,9 @@ def make_net_with_init_weights_from_list(net_fn,init_weights):
 def abs_mean(values):
     """Compute the mean of the absolute values a set of numbers.
     For computing the stopping condition for training neural nets"""
-    abs_vals = map(lambda x: abs(x), values)
+    abs_vals = list(map(abs, values))
     total = sum(abs_vals)
-    return total / float(len(abs_vals))
+    return Decimal(total) / Decimal(float(len(abs_vals)))
 
 
 def train(network,
@@ -407,7 +441,7 @@ def train(network,
         performances = []  # store performance on each data point
         for datum in data:
             # set network inputs
-            for i in xrange(len(network.inputs)):
+            for i in range(len(network.inputs)):
                 network.inputs[i].set_value(datum[i])
 
             # set network desired output
@@ -419,7 +453,7 @@ def train(network,
             # compute all the weight updates
             for w in network.weights:
                 w.set_next_value(w.get_value() +
-                                 rate * network.performance.dOutdX(w))
+                                 Decimal(rate) * Decimal(network.performance.dOutdX(w)))
 
             # set the new weights
             for w in network.weights:

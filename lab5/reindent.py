@@ -48,8 +48,8 @@ no_backup = 0
 
 def usage(msg=None):
     if msg is not None:
-        print >> sys.stderr, msg
-    print >> sys.stderr, __doc__
+        print(msg, file=sys.stderr)
+    print(__doc__, file=sys.stderr)
 
 def errprint(*args):
     sep = ""

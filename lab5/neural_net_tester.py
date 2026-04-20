@@ -1,5 +1,5 @@
-#!/usr/bin/env python2.5
-#
+#!/usr/bin/env python3
+# 
 # Unit tester for neural_net.py
 #
 import sys

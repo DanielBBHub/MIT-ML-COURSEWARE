@@ -1,4 +1,3 @@
-import xmlrpclib
 import traceback
 import sys
 import os
@@ -50,8 +49,8 @@ def show_result(testsummary, testcode, correct, got, expected, verbosity):
         if verbosity > 0:
             print( "%s: Correct." % testsummary)
         if verbosity > 1:
-            print ('\t', testcode)
-            print
+            print('\t', testcode)
+            print()
     else:
         print ("%s: Incorrect." % testsummary)
         print ('\t', testcode)
@@ -65,7 +64,7 @@ def show_exception(testsummary, testcode):
     print ('\t', testcode)
     print ("Your code encountered the following error:")
     traceback.print_exc()
-    print
+    print()
 
 
 def get_lab_module():
@@ -214,9 +213,9 @@ def get_tarball_data(target_dir, filename):
     file.add(target_dir+"/boost.py")
     file.add(target_dir+"/key.py")
 
-    print( "Done.")
-    print
-    print ("The following files have been added:")
+    print("Done.")
+    print()
+    print("The following files have been added:")
 
     for f in file.getmembers():
         print( f.name)

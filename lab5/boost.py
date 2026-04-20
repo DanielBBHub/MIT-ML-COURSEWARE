@@ -1,8 +1,8 @@
-from sets import Set as set
+
 from data_reader import *
 import math
 import orange_for_6034
-import orange
+import Orange
 
 class Classifier():
     """
@@ -313,29 +313,26 @@ class OrangeWrapperClassifier(Classifier):
 #>
 #< BoostOrangeClassifier
 
-class BoostOrangeClassifier(orange.Classifier):
+class BoostOrangeClassifier(Orange.base.Model):
     def __init__(self, domain, classifier):
-        self.classVar = domain.classVar
+        self.classVar = domain.class_var
         self.classifier = classifier
-    def __call__(self, example, what = orange.Classifier.GetValue):
-        probability = self.classifier.orange_classify(example)
-
-        answer = orange.Value(self.classVar, int(round(probability)))
-        probabilities = orange.DiscDistribution(self.classVar)
-        probabilities[answer] = probability
-        if what == orange.Classifier.GetValue:
-            return answer
-        elif what == orange.Classifier.GetProbabilities:
-            return probabilities
+    def __call__(self, data, ret=Orange.base.Model.Value):
+        probability = self.classifier.orange_classify(data)
+        class_val = int(round(probability))
+        if ret == Orange.base.Model.Value:
+            return class_val
+        elif ret == Orange.base.Model.Probs:
+            return [1 - probability, probability]
         else:
-            return answer, probabilities
+            return class_val, [1 - probability, probability]
     def __str__(self):
         return str(self.classifier)
 
 #>
 #< BoostOrangeLearner
 
-class BoostOrangeLearner(orange.Learner):
+class BoostOrangeLearner( Orange.base.Learner):
     # the BoostClassifier above is already a Learner in the Orange sense,
     # because Orange separates the training (Learner) from the classification,
     # but the BoostClassifier combines them.
@@ -347,7 +344,7 @@ class BoostOrangeLearner(orange.Learner):
         # FIXME: I have no idea what weightID is supposed to do.  :-/
         classifiers = []
         ourdata = data
-        if isinstance(self.learners[self.learners.keys()[0]], orange.Learner):
+        if isinstance(self.learners[list(self.learners.keys())[0]], Orange.base.Learner):
             classifiers = [OrangeWrapperClassifier(self.learners[i](data))
                            for i in self.learners]
         else:
