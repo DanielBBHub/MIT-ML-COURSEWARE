@@ -1,4 +1,4 @@
-Copilot said: # MIT — Introduction to Artificial Intelligence Repositorio
+# MIT — Introduction to Artificial Intelligence Repositorio
 MIT — Introduction to Artificial Intelligence
 
 Repositorio de apuntes y ejercicios del curso MIT — Introduction to Artificial Intelligence, organizado por problem sets.
@@ -6,12 +6,12 @@ Estructura
 
 Cada carpeta de problem_set_X contiene un README.md con los apuntes mínimos necesarios para entender y resolver los ejercicios de ese lab.
 
-    problem_set_0/ — Python programming, symbolic algebra
-    problem_set_1/ — Forward chaining, backward chaining, goal trees
-    problem_set_2/ — Search, heuristics, optimal search, graph heuristics
-    problem_set_3/ — Game search
-    problem_set_4/ — CSP, k-nearest neighbors, decision trees
-    problem_set_5/ — Neural nets, boosting
+    lab_0/ — Python programming, symbolic algebra
+    lab_1/ — Forward chaining, backward chaining, goal trees
+    lab_2/ — Search, heuristics, optimal search, graph heuristics
+    lab_3/ — Game search
+    lab_4/ — CSP, k-nearest neighbors, decision trees
+    lab_5/ — Neural nets, boosting
 
 Objetivo
 
